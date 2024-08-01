@@ -1,4 +1,6 @@
-# Metrónomo Web Personalizable
+# Metrónomo Vanilla JS Circular Offline
+
+## Con sonidos reales, fácil de personalizar
 
 Este es un metrónomo web sencillo pero potente que te permite crear y practicar ritmos con facilidad.
 
@@ -55,6 +57,9 @@ Las contribuciones son bienvenidas. Por favor, crea un fork del repositorio y en
 
 Este proyecto está licenciado bajo la Licencia MIT.
 
+## Créditos
+
+Este proyecto hace uso de la increíble librería [Howler.js](https://howlerjs.com/) para la reproducción de audio. Muchas gracias al equipo de desarrollo de Howler.js por su excelente trabajo.
 
 -----
 
