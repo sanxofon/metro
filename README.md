@@ -59,15 +59,15 @@ También puedes añadir tus propios sonidos creando tu propio archivo `beats.js`
 
 ## Descripción de los Sonidos de Percusión en beats.js:
 
-1. **A:** Un golpe de bombo profundo y resonante, ideal para marcar el primer tiempo.
-2. **B:** Un sonido de caja con un ataque nítido y un decaimiento corto, perfecto para acentos rítmicos.
-3. **C:** Un golpe de clave cubana, útil para mantener un ritmo constante.
-4. **D:** Un cencerro brillante y penetrante, ideal para marcar subdivisiones o ritmos sincopados.
-5. **E:** Un platillo crash con un sonido potente y amplio, perfecto para finales de compás o secciones dramáticas.
-6. **F:** Un tom de piso grave y potente, adecuado para ritmos lentos o acentos con cuerpo.
-7. **G:** Un bongó agudo y rítmico, que aporta un sabor latino al metrónomo.
-8. **H:** Un bloque de madera con un sonido seco y percusivo, ideal para ritmos minimalistas.
-9. **I:** Un triángulo brillante y metálico, que proporciona un timbre agudo y definido.
+1. **A:** Conga agudo (galleta)
+2. **B:** Metal agudo (chapa)
+3. **C:** Madera agudo (clave)
+4. **D:** Sonaja agudo (maraca)
+5. **E:** Conga agudo (abierto)
+6. **F:** Conga grave (tapado)
+7. **G:** Timbal grave (largo) 
+8. **H:** Tom de piso grave (corto)
+9. **I:** Tom de piso grave (largo)
 
 ## Contribuciones
 

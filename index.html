@@ -46,6 +46,13 @@
 <body>
 <div class="metronome">
 
+  <div id="readmeModal" class="readmodal">
+    <div class="readmodal-content">
+      <span class="close-button">×</span>
+      <div id="readmeContent"></div>
+    </div>
+  </div>
+
   <div id="settingsModal" class="modal">
     <div class="modal-content">
       <span class="close">×</span>
@@ -133,6 +140,10 @@
     <a href="javascript:playBeat(9);" class="mono">I</a> para los distintos <i>golpes</i>.
   </p>
 
+  <p>Puedes <button id="showReadme">ver el README.md</button> del proyecto para tener más información.
+    
+  </p>
+
       
   <div>
     <label for="presets">Aquí tienes algunos ritmos de ejemplo:</label>
@@ -150,8 +161,41 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+<script src="https://cdn.rawgit.com/showdownjs/showdown/1.9.1/dist/showdown.min.js"></script>
+
 <script src="beats.js"></script>
 <script src="metro.js"></script>
+
+<script>
+// Fetch README.md and convert it to HTML
+fetch('README.md') 
+.then(response => response.text())
+.then(markdown => {
+  let converter = new showdown.Converter();
+  let html = converter.makeHtml(markdown);
+  document.getElementById('readmeContent').innerHTML = html;
+});
+
+// Modal functionality
+let readmodal = document.getElementById("readmeModal");
+let btn = document.getElementById("showReadme");
+let span = document.getElementsByClassName("close-button")[0];
+
+btn.onclick = function() {
+  readmodal.style.display = "block";
+}
+
+span.onclick = function() {
+  readmodal.style.display = "none";
+}
+
+window.onclick = function(event) {
+  if (event.target == readmodal) {
+    readmodal.style.display = "none";
+  }
+}
+</script>
+
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
