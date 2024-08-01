@@ -31,6 +31,26 @@ Este es un metrónomo web sencillo pero potente que te permite crear y practicar
 7. Usa el ícono de configuración (⏳) para acceder al historial de patrones y al botón para vaciar el historial.
 8. Puedes cambiar entre el modo claro y oscuro usando el interruptor en la parte superior izquierda.
 
+### Algunos patrones de ejemplo
+
+Aquí tienes algunos patrones de ejemplo que puede encontrar en el selector al final de la app.
+
+* **Clave de Son** (16 pulsos):
+     
+    `C00C00CH00C0CBB0`
+
+* **Samba** (16 pulsos):
+ 
+    `C0C0BB0C0C0BB0B0`
+ 
+* **Vals** (12 pulsos):
+ 
+    `A0C0C0A0C0C0`
+ 
+* **Son** jarocho (12 pulsos):
+ 
+    `AC0BICBC0B0C`
+
 ## Personalización
 
 Puedes personalizar la apariencia del metrónomo editando el archivo `metro.css`.
