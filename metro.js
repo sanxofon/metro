@@ -31,6 +31,8 @@ const muteIcon = document.getElementById('mute-icon');
 const patternLenDiv = document.getElementById('patternLen'); 
 // Botón para vaciar el historial de patrones
 const vaciarHistorial = document.getElementById('vaciarHistorial'); 
+// Select de presets
+const presetsSelect = document.getElementById('presets');
 
 //  DARK/LIGHT MODE SWITCH
 const darkModeSwitch = document.getElementById('darkModeSwitch');
@@ -513,6 +515,16 @@ darkModeSwitch.addEventListener('change', () => {
   } else {
     body.classList.remove('dark-mode');
   }
+});
+
+// Listener para el selector de presets
+presetsSelect.addEventListener('change', () => {
+  const selectedPreset = presetsSelect.value;
+  beatPatternInput.value = selectedPreset;
+  beatPattern = selectedPreset; // Actualiza la variable beatPattern
+  listPattern = transT2N(beatPattern);
+  beatsPerMeasure = beatPattern.length; // Recalcula beats por compás
+  startIfIntervalId(); // Reinicia el metrónomo
 });
 
 

@@ -41,7 +41,7 @@ También puedes añadir tus propios sonidos creando tu propio archivo `beats.js`
 
 1. **A:** Un golpe de bombo profundo y resonante, ideal para marcar el primer tiempo.
 2. **B:** Un sonido de caja con un ataque nítido y un decaimiento corto, perfecto para acentos rítmicos.
-3. **C:** Un charles cerrado con un sonido preciso y definido, útil para mantener un ritmo constante.
+3. **C:** Un golpe de clave cubana, útil para mantener un ritmo constante.
 4. **D:** Un cencerro brillante y penetrante, ideal para marcar subdivisiones o ritmos sincopados.
 5. **E:** Un platillo crash con un sonido potente y amplio, perfecto para finales de compás o secciones dramáticas.
 6. **F:** Un tom de piso grave y potente, adecuado para ritmos lentos o acentos con cuerpo.
