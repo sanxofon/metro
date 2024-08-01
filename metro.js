@@ -524,6 +524,9 @@ presetsSelect.addEventListener('change', () => {
   beatPattern = selectedPreset; // Actualiza la variable beatPattern
   listPattern = transT2N(beatPattern);
   beatsPerMeasure = beatPattern.length; // Recalcula beats por compás
+  // createHourMarks(beatsPerMeasure);
+  updatePatternLen();
+  createHourMarks(beatsPerMeasure);
   startIfIntervalId(); // Reinicia el metrónomo
 });
 
