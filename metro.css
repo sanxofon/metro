@@ -1,0 +1,435 @@
+@charset "UTF-8";
+
+:root { 
+  --clock-size: 200px;
+  --max-size: 320px;
+  font-size: 16px;
+  --primary-color: #222323; /* Default primary color (dark) */
+  --secondary-color: #FFFFFE; /* Default secondary color (light) */
+  --accent-color: chocolate; 
+}
+
+/*  General Styles - Light Mode  */
+body {
+  background-color: #eee;
+  color: var(--primary-color);
+  transition: background-color 0.3s ease, color 0.3s ease; 
+}
+
+* {
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+.mono {
+  font-family: 'Roboto Mono', 'Courier New', Courier, monospace;
+}
+
+/* Contenedor principal del metrónomo */
+.metronome {
+  text-align: center;
+  max-width: var(--max-size);
+  margin: auto;
+  position: relative;
+}
+
+h1 { /*  Encabezado  */
+  margin-top: 0;
+  margin-bottom: 0.5em;
+}
+
+p { /*  Párrafo explicativo  */
+  text-align: left;
+  font-size: 1.1em;
+}
+
+a { /*  Estilos para enlaces  */
+  text-decoration: none;
+  color: #400;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/*  Recuadros generales  */
+.recuadro {
+  position: relative;
+  display: inline-block;
+  /* margin-bottom: 20px; */
+  padding: 10px;
+  /* border: 1px solid var(--primary-color); */
+  border-radius: 10px;
+  /* background: var(--secondary-color); */
+}
+
+/* Recuadro del reloj circular */
+.recuadro.reloj {
+  background-color: #eee;
+  border: 2px solid #999;
+  position: sticky;
+  top: 2px;
+  padding: 1px;
+  z-index: 2;
+  width: 100%;
+}
+
+/* Contador de beat */
+.recuadro.beat-counter {
+  font-size: 3em;
+  line-height: 80%;
+  width: 1.5em;
+}
+
+/*  Controles  */
+button {
+  padding: 5px 15px;
+  margin: 0 10px;
+  font-size: 2em;
+  line-height: 100%;
+  font-family: serif;
+  cursor: pointer;
+  width: 2em;
+  height: 2em;
+}
+
+select, input {
+  font-size: 1.7em;
+  background-color: #fff;
+  color: #333;
+  border-color: #ccc;
+  border-radius: 5px;
+}
+
+/* Sliders */
+#bpmSlider, #volumen {
+  width: var(--clock-size);
+}
+
+/*  Input del patrón de beats  */
+#beatPattern {
+  width: -moz-available;
+  padding: 10px;
+  font-size: 1.3em;
+  font-family: 'Roboto Mono', 'Courier New', Courier, monospace;
+}
+
+#patternLen {
+  position: absolute;
+  min-width: 20px;
+  top: 0;
+  right: 0;
+  color: var(--accent-color);
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+/*  Reloj circular  */
+.clock {
+  margin: auto;
+  width: var(--clock-size);
+  height: var(--clock-size);
+  border-radius: 50%;
+  border: 2px solid #000;
+  background-color: #FFF;
+  position: relative;
+}
+
+/* Marcas de hora */
+.hour-mark {
+  position: absolute;
+  width: 3px;
+  height: calc((var(--clock-size) / 2) + 1px);
+  transform-origin: 50% 100%; /*  Rotar desde la parte inferior  */
+  margin-top: -1px;
+  margin-left: calc((var(--clock-size) / 2) - 1px);
+  background-color: rgba(0, 0, 0, 0.2); /* Default mark color */
+}
+
+/*  Colores de las marcas para cada tipo de beat  */
+.hour-mark.beat1,.square.beat1 {
+  background-color: rgba(255, 0, 0, 0.7)!important;
+}
+
+.hour-mark.beat2,.square.beat2 {
+  background-color: rgba(0, 0, 255, 0.7)!important;
+}
+
+.hour-mark.beat3,.square.beat3 {
+  background-color: rgba(0, 201, 0, 0.7)!important;
+}
+
+.hour-mark.beat4,.square.beat4 {
+  background-color: rgba(0, 255, 255, 0.7)!important;
+}
+
+.hour-mark.beat5,.square.beat5 {
+  background-color: rgba(255, 255, 0, 0.7)!important;
+}
+
+.hour-mark.beat6,.square.beat6 {
+  background-color: rgba(149, 0, 194, 0.7)!important;
+}
+
+.hour-mark.beat7,.square.beat7 {
+  background-color: rgba(255, 102, 0, 0.7)!important;
+}
+
+.hour-mark.beat8,.square.beat8 {
+  background-color: rgba(253, 110, 182, 0.7)!important;
+}
+
+.hour-mark.beat9,.square.beat9 {
+  background-color: rgba(179, 255, 0, 0.7)!important;
+}
+.hour-mark.off {
+  background-color: rgba(0, 0, 0, 0.2)!important;
+}
+
+/* Manecilla del reloj */
+.hand {
+  width: 5px;
+  height: calc(var(--clock-size) / 2);
+  background-color: #000;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 50% 100%; /*  Rotar desde la parte inferior  */
+}
+
+.hour-hand {
+  height: calc(var(--clock-size) / 2);
+  margin: 0;
+  margin-left: -2px;
+  margin-top: -50%;
+}
+
+/*  Cuadros de selección de números para silenciar  */
+.numberContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 1.4em;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: auto repeat(9, auto);
+  gap: 0px;
+}
+
+.square {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #999; 
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  cursor: pointer;
+  margin: 2px;
+}
+
+.square:hover {
+  border: 2px solid var(--primary-color);
+}
+
+.selected { /*  Cuadros seleccionados (silenciados)  */
+  background-color: lightblue; 
+  text-decoration: line-through;
+  filter: grayscale(100%);
+}
+
+#mute-icon {
+  filter: grayscale(100%) sepia(100%);
+  font-size: 26px;
+  margin-top: -4px;
+  cursor: pointer;
+}
+#mute-icon:hover {
+  filter: grayscale(100%);
+}
+
+/* Icono de configuración */
+.settings-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--accent-color);
+  filter: grayscale(100%) sepia(100%);
+}
+
+.settings-icon:hover {
+  filter: grayscale(100%);
+}
+
+#historial {
+  font-size: 1.2em;
+  width: 300px;
+}
+
+/*  Modal de configuración  */
+.modal {
+  display: none; /*  Oculto por defecto  */
+  position: fixed; 
+  z-index: 99; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+}
+
+.modal-content {
+  background-color: var(--secondary-color);
+  margin: 10% auto; /*  Centrar horizontal y verticalmente  */
+  padding: 10px 20px 20px 20px;
+  border: 1px solid var(--primary-color);
+  width: 320px; 
+  border-radius: 5px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Botón de cierre del modal */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: var(--primary-color);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/*  Estilos para el grid de configuración  */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr; /*  Una sola columna  */
+  gap: 10px;
+}
+
+
+/*  Dark Mode Styles  */
+body.dark-mode {
+  --primary-color: #FFFFFE;
+  --secondary-color: #222323;
+  background-color: #111;
+  color: var(--primary-color);
+}
+
+body.dark-mode .recuadro.reloj {
+  background-color: #111;
+}
+
+body.dark-mode a {
+  color: rgb(255, 235, 125);
+}
+
+body.dark-mode select, body.dark-mode input {
+  background-color: #000;
+  color: #fff;
+  border-color: #666;
+  border-radius: 5px;
+}
+
+body.dark-mode .clock {
+  border: 2px solid #fff;
+  background-color: #000;
+}
+
+body.dark-mode .hour-mark {
+  background-color: rgba(255, 255, 255, 0.2); /* Default mark color */
+}
+
+body.dark-mode .hand {
+  background-color: #fff;
+}
+
+body.dark-mode #patternLen {
+  background-color: #000;
+}
+
+/*  DARK/LIGHT MODE SWITCH STYLE  */
+/* Switch Dark Mode container */
+.switch-div {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  filter: grayscale(100%) sepia(100%);
+}
+.switch:hover {
+  filter: grayscale(100%);
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+  transform: scale(0.6);
+  border: 3px solid #999;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 1px;
+  background-color: #999;
+  border: 3px solid #666;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
