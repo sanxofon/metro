@@ -101,6 +101,10 @@ select, input {
   border-radius: 5px;
 }
 
+#presets {
+  font-size: 16px;
+}
+
 /* Sliders */
 #bpmSlider, #volumen {
   width: var(--clock-size);
