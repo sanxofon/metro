@@ -2,6 +2,12 @@
 
 Este es un metrónomo web sencillo pero potente que te permite crear y practicar ritmos con facilidad.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Hosted-blue)](https://sanxofon.github.io/metro/)
+[![GitHub issues](https://img.shields.io/github/issues/sanxofon/metro)](https://github.com/sanxofon/metro/issues)
+[![GitHub forks](https://img.shields.io/github/forks/sanxofon/metro)](https://github.com/sanxofon/metro/network/members)
+[![GitHub stars](https://img.shields.io/github/stars/sanxofon/metro)](https://github.com/sanxofon/metro/stargazers)
+
 ## Características
 
 * Interfaz de usuario limpia y fácil de usar.
