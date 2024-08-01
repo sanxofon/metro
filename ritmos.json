@@ -1,0 +1,267 @@
+[
+  {
+    "value": "",
+    "text": "-- Ritmos Latinos según IA (12x2) --",
+    "off": 1
+  },
+  {
+    "value": "C0AC0A0B00C0 E0AF0A0B00E0",
+    "text": "Son Montuno Extendido (24)",
+    "off": 0
+  },
+  {
+    "value": "0C00CFD0B000 00E0CFD0B000",
+    "text": "Rumba Guaguancó (24)",
+    "off": 0
+  },
+  {
+    "value": "GB0AGB0AGB0A GB0AGB0AGB0A",
+    "text": "Mozambique Contundente (24)",
+    "off": 0
+  },
+  {
+    "value": "C00B0AD000C0 00DB0AE000C0",
+    "text": "Bomba Compleja (24)",
+    "off": 0
+  },
+  {
+    "value": "0D0GI00D0000 0D0GI00DE0A0",
+    "text": "Samba Reggae Evolutivo (24)",
+    "off": 0
+  },
+  
+  {
+    "value": "",
+    "text": "-- Ritmos Latinos según IA (16x2) --",
+    "off": 1
+  },
+  {
+    "value": "00C00A00C0000B00 00C00A00C000DB00",
+    "text": "Salsa Dura (clásica) (32)",
+    "off": 0
+  },
+  {
+    "value": "C000C000A0B00000 E0AF0A000000B000",
+    "text": "Guaguancó con Sabor (32)",
+    "off": 0
+  },
+  {
+    "value": "000GI0D0000000000 000GI0D0000E0A000",
+    "text": "Merengue con Golpe (34)",
+    "off": 0
+  },
+  {
+    "value": "00C0B00000C0B000 00C0B0D000C00A000",
+    "text": "Plena con Alegría (33)",
+    "off": 0
+  },
+  {
+    "value": "0A00B000C000D000 0A00B000C000D0E0",
+    "text": "Cumbia Moderna (Electrónica) (32)",
+    "off": 0
+  },
+  {
+    "value": "0000C0000000C0A0 B0000000C000C000",
+    "text": "Dembow Minimalista (32)",
+    "off": 0
+  },
+  {
+    "value": "C00C000A000C00C0 0000B0A00000C000",
+    "text": "Timba con Descarga (32)",
+    "off": 0
+  },
+  
+  {
+    "value": "",
+    "text": "-- Ritmos Africanos según IA (12x2) --",
+    "off": 1
+  },
+  {
+    "value": "00AG0000AG00 00AG0000AG00",
+    "text": "Ritmo de Gnawa (24)",
+    "off": 0
+  },
+  {
+    "value": "0000CD000000 CD000000CD00",
+    "text": "Ritmo de Juju (24)",
+    "off": 0
+  },
+  {
+    "value": "C0A0C00B0000 C0A0C00B0000",
+    "text": "Ritmo de Highlife (24)",
+    "off": 0
+  },
+  {
+    "value": "0A0B00C0A000 0A0B00C0D000",
+    "text": "Ritmo de Kizomba (24)",
+    "off": 0
+  },
+  {
+    "value": "000GI0000000 00000IG00000",
+    "text": "Ritmo de Afrobeat (Tónico) (24)",
+    "off": 0
+  },
+  {
+    "value": "C00C00C00C00 C0DC00C00C00",
+    "text": "Ritmo de Mbalax (24)",
+    "off": 0
+  },
+  
+  {
+    "value": "",
+    "text": "-- Ritmos Africanos según IA --",
+    "off": 1
+  },
+  {
+    "value": "00AG0000AG0000AG00 00AG0000AG0000AG00",
+    "text": "Gnawa Expansivo (36)",
+    "off": 0
+  },
+  {
+    "value": "0000CD000000CD0000 0000CD000000CD0000",
+    "text": "Juju Hipnótico (36)",
+    "off": 0
+  },
+  {
+    "value": "C0A0C00B0000C0A0 C00B0000C0A0C00B0",
+    "text": "Highlife Envolvente (33)",
+    "off": 0
+  },
+  {
+    "value": "0A0B00C0A0000A0B 00C0A0000A0B00C00",
+    "text": "Kizomba Seductor (33)",
+    "off": 0
+  },
+  {
+    "value": "000GI0000000000GI0 0000000000GI000000",
+    "text": "Afrobeat Base Profunda (36)",
+    "off": 0
+  },
+  {
+    "value": "C00C00C00C00C00C C0DC00C00C00C0DC0",
+    "text": "Mbalax Frenético (33)",
+    "off": 0
+  },
+  {
+    "value": "00AB000000AB0000 00AB00CD00AB00EF0",
+    "text": "Ritmo Tribal Evolutivo (33)",
+    "off": 0
+  },
+  {
+    "value": "0000A0B0C000D000 0000A0B0C000D0000",
+    "text": "Fusión Afro-Latina (33)",
+    "off": 0
+  },
+  
+  {
+    "value": "",
+    "text": "-- Ritmos Africanos Inventados por la IA --",
+    "off": 1
+  },
+  {
+    "value": "0AG00AG000AG0AG000 0AG000AG0AG00AG00",
+    "text": "Danza del Sol Naciente (35)",
+    "off": 0
+  },
+  {
+    "value": "C00B000C00B0A00B0 C000B00C00B00A0B",
+    "text": "Canción del Bosque Sagrado (33)",
+    "off": 0
+  },
+  {
+    "value": "000E0F0000E0F000 0E0F000E00F000E",
+    "text": "Latidos del Corazón de la Tierra (31)",
+    "off": 0
+  },
+  {
+    "value": "GBAGBAGBAGBAGBAGBA GBAGBAGBAGBAGBAGBA",
+    "text": "Tambores de la Gran Migración (36)",
+    "off": 0
+  },
+  {
+    "value": "00CD0CD00CD000CD0 0CD0CD00CD000CD",
+    "text": "Ritmo del Río Ancestral (32)",
+    "off": 0
+  },
+  {
+    "value": "HHHHIIHHIIIIHHIIII HHHHIIHHIIIIHHIIII",
+    "text": "Danza del Fuego Ceremonial (36)",
+    "off": 0
+  },
+  {
+    "value": "00A00E0000A00E00 00A00E0000G00H00",
+    "text": "Sinfonía de la Sabana (32)",
+    "off": 0
+  },
+  {
+    "value": "C000C000C000C000 D000D000D000D000",
+    "text": "Llamada a los Espíritus (32)",
+    "off": 0
+  },
+  {
+    "value": "0A0B000C0D000E0F 0A0B000C0D000E0F",
+    "text": "Viaje Interestelar Africano (32)",
+    "off": 0
+  },
+  {
+    "value": "0000EF000000EF00 0000EF000000EF00",
+    "text": "Pulso del Cosmos Infinito (32)",
+    "off": 0
+  },
+  
+  {
+    "value": "",
+    "text": "-- Ritmos Irregulares Inventados por la IA --",
+    "off": 1
+  },
+  {
+    "value": "AHGBEFC0AHGBEFC0AH",
+    "text": "Odisea Rítmica (18)",
+    "off": 0
+  },
+  {
+    "value": "CEDFAG0CEDFAG0CEDF",
+    "text": "Danza Fractal (18)",
+    "off": 0
+  },
+  {
+    "value": "HGE00HGE00HGE00HGE",
+    "text": "Pulso Cósmico (18)",
+    "off": 0
+  },
+  {
+    "value": "AFC00AFC00AFC00AF",
+    "text": "Espiral Sónica (17)",
+    "off": 0
+  },
+  {
+    "value": "0EBAGFED0EBAGFED",
+    "text": "Vorágine Rítmica (16)",
+    "off": 0
+  },
+  {
+    "value": "BAG0BAG0BAG0BAG0BA",
+    "text": "Viaje Interdimensional (18)",
+    "off": 0
+  },
+  {
+    "value": "CE00CE00CE00CE00C",
+    "text": "Ecos Asimétricos (17)",
+    "off": 0
+  },
+  {
+    "value": "00HDFAGEC00HDFAGEC",
+    "text": "Danza del Caos Controlado (18)",
+    "off": 0
+  },
+  {
+    "value": "AGBAGBAGBAGBAGBAGBA",
+    "text": "Onda Expansiva (19)",
+    "off": 0
+  },
+  {
+    "value": "FEDCBAFEDCBAFEDCB",
+    "text": "Cascada Rítmica Descendente (17)",
+    "off": 0
+  }
+]

@@ -120,11 +120,11 @@
     </div>
     <div>
       <label for="volumen">Velocidad</label>
-      <input type="range" id="bpmSlider" min="1" max="1000" value="120" style="vertical-align: middle;">
+      <input type="range" id="bpmSlider" min="1" max="1000" value="120" class="vmiddle">
     </div>
     <div>
       <label for="volumen">Volumen</label>
-      <input type="range" name="volumen" id="volumen" min="0" max="1" step="0.01" value="1" style="vertical-align: middle;">
+      <input type="range" name="volumen" id="volumen" min="0" max="1" step="0.01" value="1" class="vmiddle">
     </div>
   </div>
 
@@ -147,70 +147,15 @@
     <label for="presets">Aquí tienes algunos ritmos de ejemplo:</label>
     <select id="presets">
       <option value="" disabled selected>-- Selecciona un patrón rítmico --</option>
-
       <option value="C00C00CH00C0CBB0">Clave de Son (16)</option>
       <option value="C0C0BB0C0C0BB0B0">Samba (16)</option>
       <option value="A0C0C0A0C0C0">Vals (12)</option>
       <option value="AC0BICBC0B0C">Son jarocho (12)</option>
-
-      <option value="" disabled selected>-- Ritmos Latinos según IA (12x2) --</option>
-      <option value="C0AC0A0B00C0 E0AF0A0B00E0">Son Montuno Extendido</option>
-      <option value="0C00CFD0B000 00E0CFD0B000">Rumba Guaguancó</option>
-      <option value="GB0AGB0AGB0A GB0AGB0AGB0A">Mozambique Contundente</option>
-      <option value="C00B0AD000C0 00DB0AE000C0">Bomba Compleja</option>
-      <option value="0D0GI00D0000 0D0GI00DE0A0">Samba Reggae Evolutivo</option>
-
-      <option value="" disabled selected>-- Ritmos Latinos según IA (16x2) --</option>
-      <option value="00C00A00C0000B00 00C00A00C000DB00">Salsa Dura (clásica)</option>
-      <option value="C000C000A0B00000 E0AF0A000000B000">Guaguancó con Sabor</option>
-      <option value="000GI0D0000000000 000GI0D0000E0A000">Merengue con Golpe</option>
-      <option value="00C0B00000C0B000 00C0B0D000C00A000">Plena con Alegría</option>
-      <option value="0A00B000C000D000 0A00B000C000D0E0">Cumbia Moderna (Electrónica)</option>
-      <option value="0000C0000000C0A0 B0000000C000C000">Dembow Minimalista</option>
-      <option value="C00C000A000C00C0 0000B0A00000C000">Timba con Descarga</option>
-
-      <option value="" disabled selected>-- Ritmos Africanos según IA (12x2) --</option>
-      <option value="00AG0000AG00 00AG0000AG00">Ritmo de Gnawa</option> 
-      <option value="0000CD000000 CD000000CD00">Ritmo de Juju</option>
-      <option value="C0A0C00B0000 C0A0C00B0000">Ritmo de Highlife</option>
-      <option value="0A0B00C0A000 0A0B00C0D000">Ritmo de Kizomba</option>
-      <option value="000GI0000000 00000IG00000">Ritmo de Afrobeat (Tónico)</option>
-      <option value="C00C00C00C00 C0DC00C00C00">Ritmo de Mbalax</option>
-
-             
-      <option value="" disabled selected>-- Ritmos Africanos según IA --</option>
-      <option value="00AG0000AG0000AG00 00AG0000AG0000AG00">Gnawa Expansivo</option>
-      <option value="0000CD000000CD0000 0000CD000000CD0000">Juju Hipnótico</option>
-      <option value="C0A0C00B0000C0A0 C00B0000C0A0C00B0">Highlife Envolvente</option>
-      <option value="0A0B00C0A0000A0B 00C0A0000A0B00C00">Kizomba Seductor</option>
-      <option value="000GI0000000000GI0 0000000000GI000000">Afrobeat Base Profunda</option>
-      <option value="C00C00C00C00C00C C0DC00C00C00C0DC0">Mbalax Frenético</option>
-      <option value="00AB000000AB0000 00AB00CD00AB00EF0">Ritmo Tribal Evolutivo</option>
-      <option value="0000A0B0C000D000 0000A0B0C000D0000">Fusión Afro-Latina</option>
-
-      <option value="" disabled selected>-- Ritmos Africanos Inventados por la IA --</option>
-      <option value="0AG00AG000AG0AG000 0AG000AG0AG00AG00">Danza del Sol Naciente</option>
-      <option value="C00B000C00B0A00B0 C000B00C00B00A0B">Canción del Bosque Sagrado</option>
-      <option value="000E0F0000E0F000 0E0F000E00F000E">Latidos del Corazón de la Tierra</option>
-      <option value="GBAGBAGBAGBAGBAGBA GBAGBAGBAGBAGBAGBA">Tambores de la Gran Migración</option>
-      <option value="00CD0CD00CD000CD0 0CD0CD00CD000CD">Ritmo del Río Ancestral</option>
-      <option value="HHHHIIHHIIIIHHIIII HHHHIIHHIIIIHHIIII">Danza del Fuego Ceremonial</option>
-      <option value="00A00E0000A00E00 00A00E0000G00H00">Sinfonía de la Sabana</option>
-      <option value="C000C000C000C000 D000D000D000D000">Llamada a los Espíritus</option>
-      <option value="0A0B000C0D000E0F 0A0B000C0D000E0F">Viaje Interestelar Africano</option>
-      <option value="0000EF000000EF00 0000EF000000EF00">Pulso del Cosmos Infinito</option>
-
-    
-
     </select>
   </div>
   <p class="small">
-    Puedes <button id="showReadme">VER EL README</button> del proyecto para tener más información.
+    Puedes <button type="button" id="showReadme">VER EL README</button> del proyecto para tener más información.
   </p>
-  0A0B00C0A0000A0B 00C0A0000A0B00C00
-      
-  
-      
 
 </div>
 
@@ -219,6 +164,26 @@
 
 <script src="beats.js"></script>
 <script src="metro.js"></script>
+
+<script>
+// Carga la lista de ritmos presets
+fetch('ritmos.json')
+  .then(response => response.json())
+  .then(data => {
+    data.forEach(ritmo => {
+      const option = document.createElement('option');
+      option.value = ritmo.value;
+      option.text = ritmo.text;
+      if(ritmo.off>0) {
+        option.setAttribute('disabled','disabled');
+      }
+      document.getElementById('presets').add(option);
+    });
+  })
+  .catch(error => {
+    console.error('Error fetching data:', error);
+  });
+</script>
 
 <script>
 // Fetch README.md and convert it to HTML

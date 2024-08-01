@@ -45,6 +45,10 @@ p { /*  Párrafo explicativo  */
   font-size: 0.9em;
 }
 
+.vmiddle {
+  vertical-align: middle;
+}
+
 a { /*  Estilos para enlaces  */
   text-decoration: none;
   color: #400;
