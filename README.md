@@ -34,3 +34,48 @@ Las contribuciones son bienvenidas. Por favor, crea un fork del repositorio y en
 ## Licencia
 
 Este proyecto está licenciado bajo la Licencia MIT.
+
+
+-----
+
+## Extras:
+
+### _grabCode.php
+
+Este código PHP es una herramienta útil para desarrolladores que quieren analizar su código fuente con una IA. 
+
+**Función:**
+El script recorre un directorio específico (por defecto el actual './') y busca todos los archivos con extensiones `.html`, `.css` y `.js`. Luego, combina el contenido de estos archivos en un único archivo de texto llamado `_codigo_completo.txt`. 
+
+**Excepción:**
+El script tiene una excepción incorporada para ignorar un archivo llamado `beats.js`. Se asume que este archivo es muy grande y su inclusión podría dificultar el análisis por parte de la IA. 
+
+**Uso:**
+Para usar el script, simplemente se debe guardar como `grabCode.php` en el directorio raíz del proyecto y ejecutarlo desde la línea de comandos con `php grabCode.php`.
+
+**En resumen:** El script automatiza la tarea de recopilar código fuente de diferentes archivos y lo prepara para ser analizado por una IA, lo que facilita la identificación de patrones, errores o áreas de mejora.
+
+### _sonidos/mp32base64.php
+
+Este script PHP tiene como objetivo preparar archivos de audio MP3 para ser utilizados en JavaScript.
+
+**Función:**
+
+1. **Codificación Base64:** El script toma una lista de nombres de archivos MP3 (en este caso, `sonido1.mp3` a `sonido9.mp3`). Luego, lee cada archivo y lo codifica en Base64. La codificación Base64 convierte datos binarios, como archivos de audio, a un formato de texto que se puede integrar fácilmente en código.
+
+2. **Creación del archivo `beats.js`:** El script genera un archivo JavaScript llamado `beats.js`. Este archivo contiene una variable de arreglo llamada `base64Beat`. Cada elemento de este arreglo es una cadena de texto que representa un archivo MP3 codificado en Base64.
+
+**Uso:**
+
+1. **Reemplazar nombres de archivo:** Editar el script para incluir los nombres de los archivos MP3 que se desea utilizar.
+2. **Ejecutar el script:** Ejecutar el script PHP. Esto generará el archivo `beats.js` en el mismo directorio.
+
+**Propósito:**
+
+El propósito principal de este script es facilitar la utilización de archivos de audio MP3 en código JavaScript. 
+
+- **Integración directa:** Al codificar los archivos MP3 en Base64 y colocarlos en un archivo JavaScript, se pueden reproducir directamente en un navegador web sin depender de solicitudes HTTP adicionales.
+- **Mejor rendimiento:** Integrar archivos de audio directamente en el código puede mejorar el rendimiento, especialmente en casos donde los archivos son pequeños y se utilizan con frecuencia.
+
+En resumen, este script simplifica el proceso de inclusión de archivos de audio MP3 en proyectos web al convertirlos a un formato compatible con JavaScript y listo para usar.
+
