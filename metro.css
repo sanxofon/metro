@@ -41,6 +41,9 @@ p { /*  Párrafo explicativo  */
   text-align: left;
   font-size: 1.1em;
 }
+.small {
+  font-size: 0.9em;
+}
 
 a { /*  Estilos para enlaces  */
   text-decoration: none;
@@ -491,5 +494,5 @@ input:checked + .slider:before {
   margin: 0;
   background: none;
   border: none;
-  color: #999;
+  color: unset;
 }

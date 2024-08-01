@@ -40,8 +40,8 @@ const body = document.body;
 
 // Valores por defecto de la UI
 let beatPattern = localStorage.getItem('beatPattern') || 'ABA0'; // Default Patrón de golpes
-let bpm = parseInt(localStorage.getItem('bpm')) || 120; // Default BPM/CPM
-let isCPM = parseInt(localStorage.getItem('isCPM')) || 0; // Estamos en Compases Por Minuto? Default: 0
+let bpm = parseInt(localStorage.getItem('bpm')) || 30; // Default BPM/CPM
+let isCPM = parseInt(localStorage.getItem('isCPM')) || 1; // Estamos en Compases Por Minuto? Default: 0
 let volumen = parseFloat(localStorage.getItem('volumen')) || 1; // Volumen. Default 1=Max.
 let selectedNumbers = JSON.parse(localStorage.getItem('selectedNumbers')) || []; // Números silenciados. Default: ninguno.
 let darkMode = parseInt(localStorage.getItem('darkMode')) || 0; // Modo oscuro DARK MODE
