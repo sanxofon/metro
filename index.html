@@ -209,27 +209,22 @@ fetch('README.md')
   let html = converter.makeHtml(markdown);
   document.getElementById('readmeContent').innerHTML = html;
 });
-
 // Modal functionality
 let readmodal = document.getElementById("readmeModal");
 let btn = document.getElementById("showReadme");
 let span = document.getElementsByClassName("close-button")[0];
-
 btn.onclick = function() {
   readmodal.style.display = "block";
 }
-
 span.onclick = function() {
   readmodal.style.display = "none";
 }
-
 window.onclick = function(event) {
   if (event.target == readmodal) {
     readmodal.style.display = "none";
   }
 }
 </script>
-
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

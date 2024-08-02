@@ -53,6 +53,7 @@ let millisecondsPerBeat = 60000/(bpm*bitperbeat); // Milisegundos por beat (calc
 let isplaying = false; // Estado del metrónomo (iniciado o detenido)
 let currentBeat = 0; // Índice del beat actual dentro del patrón
 let intervalId; // ID del intervalo para controlarlo
+let soundAllowed = false; // Está permitido el sonido ya? Maldito IPhone
 
 // Actualiza la UI con los valores por defecto
 bpmInput.value = bpm;
@@ -252,7 +253,14 @@ volumeSlider.addEventListener('input', () => {
 });
 
 // Inicia el metrónomo al hacer clic en el botón de inicio
-startButton.addEventListener('click', startMetronome);
+startButton.addEventListener('click', () => {
+  if (!soundAllowed) {
+    // First time click, request permission and start metronome
+    sound[0].play(); // This will trigger the browser's autoplay permission prompt
+    soundAllowed = true; // Mark sound as allowed
+  }
+  startMetronome();
+});
 
 // Detiene el metrónomo al hacer clic en el botón de detener
 stopButton.addEventListener('click', stopMetronome);
