@@ -40,15 +40,16 @@ const body = document.body;
 
 // Valores por defecto de la UI
 let beatPattern = localStorage.getItem('beatPattern') || 'ABA0'; // Default Patrón de golpes
-let bpm = parseInt(localStorage.getItem('bpm')) || 30; // Default BPM/CPM
-let isCPM = parseInt(localStorage.getItem('isCPM')) || 1; // Estamos en Compases Por Minuto? Default: 0
+let bpm = parseInt(localStorage.getItem('bpm')) || 100; // Default BPM/CPM
+let isCPM = parseInt(localStorage.getItem('isCPM')) || 0; // Estamos en Compases Por Minuto? Default: 0
 let volumen = parseFloat(localStorage.getItem('volumen')) || 1; // Volumen. Default 1=Max.
 let selectedNumbers = JSON.parse(localStorage.getItem('selectedNumbers')) || []; // Números silenciados. Default: ninguno.
 let darkMode = parseInt(localStorage.getItem('darkMode')) || 0; // Modo oscuro DARK MODE
 
 // Variables globales
+let bitperbeat = 4;
 let beatsPerMeasure = beatPattern.length; // Beats por compás (calculado inicialmente del patrón por defecto)
-let millisecondsPerBeat = 60000/bpm; // Milisegundos por beat (calculado inicialmente del BPM por defecto)
+let millisecondsPerBeat = 60000/(bpm*bitperbeat); // Milisegundos por beat (calculado inicialmente del BPM por defecto)
 let isplaying = false; // Estado del metrónomo (iniciado o detenido)
 let currentBeat = 0; // Índice del beat actual dentro del patrón
 let intervalId; // ID del intervalo para controlarlo
@@ -171,21 +172,20 @@ function playBeat(beat) {
 // Inicia el metrónomo
 function startMetronome() {
   isplaying = true; // Actualiza el estado del metrónomo
-  saveSettings(); // Guarda la configuración actual
-  beatPattern = beatPatternInput.value.toUpperCase().replace(/[^A-I0]/g, ''); // Limpia el patrón de entrada
+  beatPattern = beatPatternInput.value.toUpperCase().replace(/[^A-I0]/g, '');
   listPattern = transT2N(beatPattern);
-  updatePatternLen();
-  updateHistoryPattern(beatPattern); // Actualiza el historial de patrones
-  updateHistorySelect(); // Actualiza el select del historial
-  beatsPerMeasure = beatPattern.length; // Calcula beats por compás
-  millisecondsPerBeat = (60000 / bpm); // Calcula ms por beat
+  beatsPerMeasure = beatPattern.length; //  Recalcula beats por compás
+  patternLenDiv.innerHTML = beatsPerMeasure; //  Actualiza el div con la longitud
+  createHourMarks(beatsPerMeasure);
+  millisecondsPerBeat = 60000/(bpm*bitperbeat); // Calcula ms por beat
+  saveSettings(); // Guarda la configuración actual
 
   // Ajusta ms por beat si estamos en CPM
   if(isCPM>0) {
     millisecondsPerBeat = millisecondsPerBeat / beatsPerMeasure;
   }
   
-  createHourMarks(beatsPerMeasure); // Crea las marcas de hora en el reloj
+  // createHourMarks(beatsPerMeasure); // Crea las marcas de hora en el reloj
 
 
   // Inicia el intervalo para la reproducción de los beats
@@ -394,24 +394,57 @@ function updateHistorySelect() {
   }
 }
 
+function setPatron(pattern,setInput=true) {
+  beatPattern = pattern.toUpperCase().replace(/[^A-I0]/g, '');  //  Actualiza la variable beatPattern
+  if(setInput) beatPatternInput.value = pattern; //  Inserta el patrón en el input
+  listPattern = transT2N(beatPattern);
+  beatsPerMeasure = beatPattern.length; //  Recalcula beats por compás
+  patternLenDiv.innerHTML = beatsPerMeasure; //  Actualiza el div con la longitud
+  updateHistoryPattern(beatPattern); // Actualiza el historial de patrones
+  updateHistorySelect(); // Actualiza el select del historial
+  createHourMarks(beatsPerMeasure);
+  startIfIntervalId(); // Reinicia el metrónomo
+}
+
+
+function shuffleString(str) {
+  const arr = str.split(''); // Split into an array of characters
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1)); // Random index
+    [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
+  }
+  return arr.join(''); // Join back into a string
+}
+function generateRandomPattern(minLength, maxLength, zeroProportion) {
+  const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
+  const numZeros = Math.floor(length * zeroProportion);
+
+  let pattern = '';
+  let zerosAdded = 0;
+
+  for (let i = 0; i < length; i++) {
+    if (zerosAdded < numZeros && Math.random() < 0.9) {
+      pattern += '0';
+      zerosAdded++;
+    } else {
+      pattern += String.fromCharCode(Math.floor(Math.random() * 9) + 65); // A-I
+    }
+  }
+  return shuffleString(pattern);
+}
+
 //  Listener para el select "historial"
 const historialSelect = document.getElementById('historial');
 historialSelect.addEventListener('change', () => {
   const selectedPattern = historialSelect.value; 
   if (selectedPattern) {
-    beatPatternInput.value = selectedPattern; //  Inserta el patrón en el input
-    beatPattern = selectedPattern;  //  Actualiza la variable beatPattern
-    listPattern = transT2N(beatPattern);
-    beatsPerMeasure = beatPattern.length; //  Recalcula beats por compás
     modal.style.display = "none";
-    startIfIntervalId(); // Reinicia el metrónomo
+    setPatron(selectedPattern);
   }
 });
 
 beatPatternInput.addEventListener('input', (event) => {
-  beatPattern = beatPatternInput.value.toUpperCase().replace(/[^A-I0]/g, '');
-  updatePatternLen(); // Actualiza la longitud del patrón (si estás usando esta función)
-  startIfIntervalId(); // Reinicia el metrónomo
+  setPatron(beatPatternInput.value.toUpperCase().replace(/[^A-I0]/g, ''),false);
 });
 beatPatternInput.addEventListener('change', (event) => {
   beatPatternInput.value = beatPatternInput.value.toUpperCase().replace(/[^A-I0 ]/g, '');
@@ -423,20 +456,14 @@ beatPatternInput.addEventListener('keyup', (event) => {
   if (event.key === 'ArrowUp') {
     event.preventDefault(); 
     const previousString = getHistoryBack(); // Obtiene el patrón anterior
-    if (previousString !== null) { 
-      beatPatternInput.value = previousString; // Actualiza el input de texto
-      beatPattern = previousString; // Actualiza el patrón actual
-      updatePatternLen(); // Actualiza la longitud del patrón (si estás usando esta función)
-      startIfIntervalId(); // Reinicia el metrónomo
+    if (previousString !== null) {
+      setPatron(previousString);
     }
   } else if (event.key === 'ArrowDown') {
     event.preventDefault(); 
     const nextString = getHistoryNext(); // Obtiene el siguiente patrón
     if (nextString !== null) {
-      beatPatternInput.value = nextString; // Actualiza el input de texto
-      beatPattern = nextString; // Actualiza el patrón actual
-      updatePatternLen(); // Actualiza la longitud del patrón (si estás usando esta función)
-      startIfIntervalId(); // Reinicia el metrónomo
+      setPatron(nextString);
     }
   } else if (allowedChars.test(event.key)) {
     // Filtra los caracteres válidos
@@ -519,15 +546,16 @@ darkModeSwitch.addEventListener('change', () => {
 
 // Listener para el selector de presets
 presetsSelect.addEventListener('change', () => {
-  const selectedPreset = presetsSelect.value;
-  beatPatternInput.value = selectedPreset;
-  beatPattern = selectedPreset; // Actualiza la variable beatPattern
-  listPattern = transT2N(beatPattern);
-  beatsPerMeasure = beatPattern.length; // Recalcula beats por compás
-  // createHourMarks(beatsPerMeasure);
-  updatePatternLen();
-  createHourMarks(beatsPerMeasure);
-  startIfIntervalId(); // Reinicia el metrónomo
+  setPatron(presetsSelect.value);
+});
+
+// Listener del randomizador
+randomForm.addEventListener('click', (event) => {
+  event.preventDefault(); // Prevent default form submission
+  const minLength = parseInt(document.getElementById('minLength').value, 10);
+  const maxLength = parseInt(document.getElementById('maxLength').value, 10);
+  const zeroProportion = parseFloat(document.getElementById('zeroProportion').value);
+  setPatron(generateRandomPattern(minLength, maxLength, zeroProportion));
 });
 
 
