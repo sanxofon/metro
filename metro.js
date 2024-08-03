@@ -158,7 +158,8 @@ function updateClock(beatsPerMeasure) {
 let sound = [];
 for(var i = 0 ; i<base64Beat.length;i++){
   sound.push(new Howl({
-    src: [base64Beat[i]]
+    src: base64Beat[i],
+    preload: true 
     //src: ['https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/success.mp3']
   }));
 }
