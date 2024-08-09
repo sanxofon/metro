@@ -47,7 +47,7 @@ let selectedNumbers = JSON.parse(localStorage.getItem('selectedNumbers')) || [];
 let darkMode = parseInt(localStorage.getItem('darkMode')) || 0; // Modo oscuro DARK MODE
 
 // Variables globales
-let bitperbeat = 4;
+let bitperbeat = 1; // El estándar sería 4 para corchea
 let beatsPerMeasure = beatPattern.length; // Beats por compás (calculado inicialmente del patrón por defecto)
 let millisecondsPerBeat = 60000/(bpm*bitperbeat); // Milisegundos por beat (calculado inicialmente del BPM por defecto)
 let isplaying = false; // Estado del metrónomo (iniciado o detenido)
@@ -179,13 +179,13 @@ function startMetronome() {
   beatsPerMeasure = beatPattern.length; //  Recalcula beats por compás
   patternLenDiv.innerHTML = beatsPerMeasure; //  Actualiza el div con la longitud
   createHourMarks(beatsPerMeasure);
-  millisecondsPerBeat = 60000/(bpm*bitperbeat); // Calcula ms por beat
-  saveSettings(); // Guarda la configuración actual
-
   // Ajusta ms por beat si estamos en CPM
-  if(isCPM>0) {
-    millisecondsPerBeat = millisecondsPerBeat / beatsPerMeasure;
+  if(isCPM>0) { // CPM
+    millisecondsPerBeat = 60000/(bpm*beatsPerMeasure); // Calcula ms por beat
+  } else { // BPM
+    millisecondsPerBeat = 60000/(bpm*bitperbeat); // 4/4 standard
   }
+  saveSettings(); // Guarda la configuración actual
   
   // createHourMarks(beatsPerMeasure); // Crea las marcas de hora en el reloj
 
@@ -241,9 +241,14 @@ bpmSlider.addEventListener('input', () => {
 
 // Actualiza el modo BPM/CPM cuando se cambia el select
 bpmcpm.addEventListener('input', () => {
-  isCPM = parseInt(bpmcpm.value);
-  bpmcpm.value = isCPM;
-  startIfIntervalId(); // Reinicia el metrónomo
+  const tmpBC = parseInt(bpmcpm.value);
+  if (tmpBC!=isCPM) {
+    isCPM = tmpBC;
+    bpmcpm.value = isCPM;
+    bpm = parseInt(isCPM ? bpm/beatsPerMeasure:bpm*beatsPerMeasure);
+    bpmInput.value = bpm;
+    startIfIntervalId(); // Reinicia el metrónomo
+  }
 });
 
 // Actualiza el volumen general cuando se cambia el slider
