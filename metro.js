@@ -227,7 +227,12 @@ function startIfIntervalId() {
 
 // Actualiza el BPM cuando se cambia el input de texto
 bpmInput.addEventListener('input', () => {
-  bpm = parseInt(bpmInput.value);
+  const testBPM = parseInt(bpmInput.value);
+  if (bpmInput.value=='' || testBPM<=0) {
+    bpm = 1;
+  } else {
+    bpm = testBPM;
+  }
   bpmSlider.value = bpm;
   startIfIntervalId(); // Reinicia el metrónomo
 });
