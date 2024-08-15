@@ -39,6 +39,7 @@
   <link rel="icon" href="https://sanxofon.github.io/metro/favicon.png" type="image/png">
 
   <link rel="stylesheet" href="metro.css">
+  <link rel="stylesheet" href="teclado.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -87,7 +88,7 @@
     <div class="recuadro">
       <div id="patternLen" title="Longitud del patrón"></div>
       <div>
-        <input type="text" id="beatPattern" placeholder="Ingrese un patrón rítmico (e.g., 1020)" value="">
+        <input type="text" id="beatPattern" inputmode="none" value="">
       </div>
     </div>
     
@@ -103,11 +104,23 @@
 
   </div>
 
-  <!-- PATRÓN -->
-  <div class="recuadro">
-    <div class="numberContainer">
-      <div class="grid" id="numberGrid" title="Silenciar / Desilenciar"><div id="mute-icon" title="Silenciar / Desilenciar todos">&#128263;</div></div>
-    </div>
+  <!-- TECLADO -->
+  <div class="teclado">
+    <button class="boton number" title="Conga agudo (galleta)">A</button>
+    <button class="boton number" title="Metal agudo (chapa)">B</button>
+    <button class="boton number" title="Madera agudo (clave)">C</button>
+    <button class="boton backspace" id="backspace" title="Borrar anterior">⌫</button>
+    <button class="boton number" title="Sonaja agudo (maraca)">D</button>
+    <button class="boton number" title="Conga agudo (abierto)">E</button>
+    <button class="boton number" title="Conga grave (tapado)">F</button>
+    <button class="boton supr" id="supr" title="Borrar siguiente">⌦</button>
+    <button class="boton number" title="Timbal grave (largo)">G</button>
+    <button class="boton number" title="Tom de piso grave (corto)">H</button>
+    <button class="boton number" title="Tom de piso grave (largo)">I</button>
+    <button class="boton vaciar" id="vaciar" title="Borrar el patrón">&#10006;</button>
+    <button class="boton number" id="zero" title="Silencio">0</button>
+    <button class="boton operator left" id="left" title="Mover cursor a la Izquierda">➧</button>
+    <button class="boton operator" id="right" title="Mover cursor a la Derecha">➧</button>
   </div>
   
   <!-- HERRAMIENTAS -->
@@ -129,6 +142,15 @@
     </div>
   </div>
 
+  <!-- MUTEAR -->
+  <div class="recuadro">
+    <div>Silenciar golpes específicos</div>
+    <div class="numberContainer">
+      <div class="grid" id="numberGrid" title="Silenciar / Desilenciar"><div id="mute-icon" title="Silenciar / Desilenciar todos">&#128263;</div></div>
+    </div>
+  </div>
+
+  <hr>
   <h1>  
       Metrónomo
   </h1>

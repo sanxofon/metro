@@ -34,6 +34,9 @@ const vaciarHistorial = document.getElementById('vaciarHistorial');
 // Select de presets
 const presetsSelect = document.getElementById('presets');
 
+// TECLADO
+const teclas = document.querySelectorAll('.teclado .boton');
+
 //  DARK/LIGHT MODE SWITCH
 const darkModeSwitch = document.getElementById('darkModeSwitch');
 const body = document.body;
@@ -576,6 +579,76 @@ randomForm.addEventListener('click', (event) => {
   const zeroProportion = parseFloat(document.getElementById('zeroProportion').value);
   setPatron(generateRandomPattern(minLength, maxLength, zeroProportion));
 });
+
+
+// TECLADO
+// const teclas = document.querySelectorAll('.teclado .boton');
+teclas.forEach(boton => {
+  boton.addEventListener('click', () => {
+    const botonValue = boton.innerText;
+    const cursorPosition = beatPatternInput.selectionStart;
+    
+    switch (boton.id) {
+      case 'left':
+      beatPatternInput.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+      break;
+      case 'right':
+      beatPatternInput.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
+      break;
+      case 'backspace':
+      beatPatternInput.value = beatPatternInput.value.substring(0, cursorPosition - 1) + beatPatternInput.value.substring(cursorPosition, beatPatternInput.value.length);
+      beatPatternInput.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+      break;
+      case 'supr':
+      beatPatternInput.value = beatPatternInput.value.substring(0, cursorPosition) + beatPatternInput.value.substring(cursorPosition + 1, beatPatternInput.value.length);
+      beatPatternInput.setSelectionRange(cursorPosition, cursorPosition);
+      break;
+      case 'vaciar':
+      beatPatternInput.value = '';
+      break;
+      default:
+      beatPatternInput.value = beatPatternInput.value.substring(0, cursorPosition) + botonValue + beatPatternInput.value.substring(cursorPosition, beatPatternInput.value.length);
+      beatPatternInput.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
+    }
+    setPatron(beatPatternInput.value.toUpperCase().replace(/[^A-I0]/g, ''),false);
+    beatPatternInput.focus();
+  });
+});
+function detectMobileDevice() {
+  const userAgentData = navigator.userAgentData;
+  let isMobile = false;
+  // 1. Check for mobile keywords in userAgentData.brands
+  if (userAgentData && userAgentData.brands) {
+    isMobile = userAgentData.brands.some(
+      (brand) =>
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          brand.brand
+        )
+    );
+  }
+  // 2. Fallback: Check navigator.userAgent if userAgentData is unavailable
+  if (!isMobile && navigator.userAgent) {
+    isMobile =
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
+  }
+  // 3. Consider touch events as a strong indicator
+  if (!isMobile && 'ontouchstart' in window) {
+    isMobile = true;
+  }
+
+  return isMobile;
+}
+// Example usage
+const isMobileDevice = detectMobileDevice();
+
+if (!isMobileDevice) {
+  const teclado = document.querySelectorAll('.teclado')[0];
+  teclado.style.display='None';
+  // Implement mobile-specific logic
+}
+
 
 
 // EJECUCIÓN INICIAL
