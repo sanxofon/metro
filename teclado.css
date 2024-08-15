@@ -19,7 +19,7 @@
 /* Media Query for Vertical Orientation */
 @media screen and (orientation: portrait) { 
   .teclado {
-    display: grid; /* Or use a different display value as needed */
+    /* display: grid; */
   }
 }
 
