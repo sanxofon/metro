@@ -587,13 +587,15 @@ teclas.forEach(boton => {
   boton.addEventListener('click', () => {
     const botonValue = boton.innerText;
     const cursorPosition = beatPatternInput.selectionStart;
-    
+    let siset = true;
     switch (boton.id) {
       case 'left':
       beatPatternInput.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+      siset = false;
       break;
       case 'right':
       beatPatternInput.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
+      siset = false;
       break;
       case 'backspace':
       beatPatternInput.value = beatPatternInput.value.substring(0, cursorPosition - 1) + beatPatternInput.value.substring(cursorPosition, beatPatternInput.value.length);
@@ -610,7 +612,7 @@ teclas.forEach(boton => {
       beatPatternInput.value = beatPatternInput.value.substring(0, cursorPosition) + botonValue + beatPatternInput.value.substring(cursorPosition, beatPatternInput.value.length);
       beatPatternInput.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
     }
-    setPatron(beatPatternInput.value.toUpperCase().replace(/[^A-I0]/g, ''),false);
+    if(siset)setPatron(beatPatternInput.value.toUpperCase().replace(/[^A-I0]/g, ''),false);
     beatPatternInput.focus();
   });
 });
