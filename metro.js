@@ -656,7 +656,7 @@ function enviarPatron(patronRitmico) {
     formData.append("p", patronRitmico);
     
     // Enviar la solicitud POST a la API
-    fetch("https://lengua.la/metro/api/api.php", {
+    fetch("https://sanxofon.github.io/metro/api/api.php", {
       method: "POST",
       body: formData
     })
