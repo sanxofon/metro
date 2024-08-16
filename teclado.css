@@ -1,20 +1,23 @@
 :root {
   /* --tecl-ancho: calc(50vh); */
-  --tecl-ancho: 240px;
+  --tecl-ancho: 320px;
   --tecl-letra: calc(var(--tecl-ancho) / 9);
 }
 
 .teclado {
+  max-width: 88vw;
+  max-height: 68vw;
   width: var(--tecl-ancho);
-  height: var(--tecl-ancho);
+  height: calc(var(--tecl-ancho) / 1.5);
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 2%;
+  margin: auto;
 }
 
 /* Default: Hide the element */
 .teclado {
-  display: none; 
+  /* display: none; */
 }
 /* Media Query for Vertical Orientation */
 @media screen and (orientation: portrait) { 
@@ -35,6 +38,13 @@
   transition: background-color 0.3s ease;
   line-height: 100%;
   height: 100%;
+
+  /* UNSET metro.css DEFAULTS */
+  padding:initial;
+  margin: initial;
+  font-family: 'Roboto Mono', 'Courier New', Courier, monospace;
+  max-width: initial;
+  max-height: initial;
 }
 
 /* Ajustar contenido del botón */
@@ -52,16 +62,19 @@
 .teclado .backspace,.teclado .supr {
   background-color: #ff4800;
   color: #fff;
+  filter: none !important;
 }
 
 .teclado .vaciar {
   background-color: #e00700;
   color: #fff;
+  filter: none !important;
 }
 
 .teclado .operator {
   background-color: #2493c7;
   color: #fff;
+  filter: none !important;
 }
 
 .teclado .operator.left {
@@ -71,4 +84,31 @@
 /* Botón 0 rectangular */
 #zero {
   grid-column: span 2;
+}
+
+
+.botonera {
+  max-width: 88vw;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 6px;
+  margin: auto;
+}
+.botonera button {
+  width: 50px;
+  height: 40px;
+  font-size: 30px;
+  line-height: 100%;
+  max-width: 20vw;
+  cursor: pointer;
+  border-radius: 6px;
+  margin: initial;
+}
+#guardar-patron {
+  background-color: rgb(180, 223, 137) !important;
+  filter: none !important;
+}
+#guardar-patron:hover {
+  background-color: chartreuse !important;
+  filter: none !important;
 }

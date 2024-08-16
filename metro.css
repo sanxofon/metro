@@ -64,7 +64,7 @@ a:hover {
   position: relative;
   display: inline-block;
   /* margin-bottom: 20px; */
-  padding: 10px;
+  padding: 6px;
   /* border: 1px solid var(--primary-color); */
   border-radius: 10px;
   /* background: var(--secondary-color); */
@@ -79,6 +79,8 @@ a:hover {
   padding: 1px;
   z-index: 2;
   width: 100%;
+  max-width: initial;
+  overflow: initial;
 }
 
 /* Contador de beat */
@@ -89,8 +91,8 @@ a:hover {
 }
 
 /*  Controles  */
-button {
-  padding: 5px 15px;
+.reloj button {
+  /* padding: 5px 15px; */
   margin: 0 10px;
   font-size: 2em;
   line-height: 100%;
@@ -99,6 +101,10 @@ button {
   width: 2em;
   height: 2em;
 }
+.beat-counter,.reloj button {
+  max-width: 15vw;
+  max-height: 15vw;
+}
 
 select, input {
   font-size: 1.7em;
@@ -106,6 +112,7 @@ select, input {
   color: #333;
   border-color: #ccc;
   border-radius: 5px;
+  max-width: 80vw;
 }
 
 #presets {
@@ -120,9 +127,10 @@ select, input {
 /*  Input del patrón de beats  */
 #beatPattern {
   width: -moz-available;
-  padding: 10px;
+  /* padding: 10px; */
   font-size: 1.3em;
   font-family: 'Roboto Mono', 'Courier New', Courier, monospace;
+  max-width: 67vw;
 }
 
 #patternLen {
@@ -223,6 +231,8 @@ select, input {
   align-items: center;
   margin-top: 10px;
   font-size: 1.4em;
+  max-width: 80vw;
+  overflow: auto;
 }
 
 .grid {
@@ -283,9 +293,9 @@ select, input {
   filter: invert(100%);
 }
 
-#historial {
-  font-size: 1.2em;
-  width: 300px;
+#historial,#memoria {
+  font-size: 1em;
+  width: 100%;
 }
 
 /*  Modal de configuración  */
@@ -305,7 +315,7 @@ select, input {
   margin: 10% auto; /*  Centrar horizontal y verticalmente  */
   padding: 10px 20px 20px 20px;
   border: 1px solid var(--primary-color);
-  width: 320px; 
+  width: 90%; 
   border-radius: 5px;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
 }

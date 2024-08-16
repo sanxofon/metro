@@ -58,8 +58,11 @@
   <div id="settingsModal" class="modal">
     <div class="modal-content">
       <span class="close">×</span>
+      <h2>&#128448; Patrones guardados</h2>
+      <div><select id="memoria" name="memoria" multiple="multiple" size="8" style="height: 180px;width: inherit;"></select></div>
+      <hr>
       <h2>⏳ Historial</h2>
-      <div><select id="historial" name="historial" size="8"></select></div>
+      <div><select id="historial" name="historial" multiple="multiple" size="6" style="height: 140px;"></select></div>
       <div><a href="#" id="vaciarHistorial">Vaciar historial de patrones</a></div>
     </div>
   </div>
@@ -76,12 +79,20 @@
   
     <!-- SETTINGS -->
     <div class="settings-icon" title="Configuración">
-      ⏳ <!-- Gear icon entity -->
+      &#9776; <!-- Gear icon entity -->
     </div>
 
     <!-- CÍRCULO -->
     <div class="clock">
       <div class="hand hour-hand"></div>
+    </div>
+    
+    <!-- BOTONES -->
+    <div>
+      <button id="startButton">&#9658;</button>
+      
+      <div class="recuadro beat-counter">0</div>
+      <button id="stopButton">&#9724;</button>
     </div>
 
     <!-- PATRÓN -->
@@ -92,38 +103,44 @@
         <!-- <input type="text" id="beatPattern" inputmode="none" value=""> -->
       </div>
     </div>
-    
-    <!-- BOTONES -->
-    <div>
-      <button id="startButton">&#9658;</button>
-      
-      <div class="recuadro beat-counter">0</div>
-      <button id="stopButton">&#9724;</button>
-    </div>
+
+    <!-- RESULTADO -->
+    <div id="resultado"></div>
     
     <br>
 
   </div>
 
+  <!-- BOTONERA -->
+  <div class="recuadro">
+    <div class="botonera">
+      <button id="teclado-switch" title="Muestra / Oculta el teclado">&#9000;</button>
+      <button id="recorrer-left" title="Recorrer patrón a la izquierda">&#8634;</button>
+      <button id="recorrer-right" title="Recorrer patrón a la derecha">&#8635;</button>
+      <button id="guardar-patron" title="Guardar Patrón">&#9094;</button>
+    </div>
+  </div>
+
   <!-- TECLADO -->
-  <div class="teclado">
-    <button class="boton number" title="Conga agudo (galleta)">A</button>
-    <button class="boton number" title="Metal agudo (chapa)">B</button>
-    <button class="boton number" title="Madera agudo (clave)">C</button>
+  <div class="teclado" style="display: none;">
+    <button class="boton number" title="Conga agudo (galleta)" onclick="playBeat(1);">A</button>
+    <button class="boton number" title="Metal agudo (chapa)" onclick="playBeat(2);">B</button>
+    <button class="boton number" title="Madera agudo (clave)" onclick="playBeat(3);">C</button>
     <button class="boton backspace" id="backspace" title="Borrar anterior">⌫</button>
-    <button class="boton number" title="Sonaja agudo (maraca)">D</button>
-    <button class="boton number" title="Conga agudo (abierto)">E</button>
-    <button class="boton number" title="Conga grave (tapado)">F</button>
+    <button class="boton number" title="Sonaja agudo (maraca)" onclick="playBeat(4);">D</button>
+    <button class="boton number" title="Conga agudo (abierto)" onclick="playBeat(5);">E</button>
+    <button class="boton number" title="Conga grave (tapado)" onclick="playBeat(6);">F</button>
     <button class="boton supr" id="supr" title="Borrar siguiente">⌦</button>
-    <button class="boton number" title="Timbal grave (largo)">G</button>
-    <button class="boton number" title="Tom de piso grave (corto)">H</button>
-    <button class="boton number" title="Tom de piso grave (largo)">I</button>
+    <button class="boton number" title="Timbal grave (largo)" onclick="playBeat(7);">G</button>
+    <button class="boton number" title="Tom de piso grave (corto)" onclick="playBeat(8);">H</button>
+    <button class="boton number" title="Tom de piso grave (largo)" onclick="playBeat(9);">I</button>
     <button class="boton vaciar" id="vaciar" title="Borrar el patrón">&#10006;</button>
     <button class="boton number" id="zero" title="Silencio">0</button>
     <button class="boton operator left" id="left" title="Mover cursor a la Izquierda">➧</button>
     <button class="boton operator" id="right" title="Mover cursor a la Derecha">➧</button>
   </div>
-  
+
+
   <!-- HERRAMIENTAS -->
   <div class="recuadro">
     <div>

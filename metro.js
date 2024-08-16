@@ -36,6 +36,9 @@ const presetsSelect = document.getElementById('presets');
 
 // TECLADO
 const teclas = document.querySelectorAll('.teclado .boton');
+// Botonera
+const botonera = document.querySelectorAll('.botonera button');
+
 
 //  DARK/LIGHT MODE SWITCH
 const darkModeSwitch = document.getElementById('darkModeSwitch');
@@ -64,6 +67,7 @@ bpmSlider.value = bpm;
 beatPatternInput.value = beatPattern;
 bpmcpm.value = isCPM;
 volumeSlider.value = volumen;
+setSliderBPMMax();
 
 //  DARK/LIGHT MODE SWITCH
 if (darkMode>0) {
@@ -246,6 +250,10 @@ bpmSlider.addEventListener('input', () => {
   bpmInput.value = bpm;
   startIfIntervalId(); // Reinicia el metrónomo
 });
+function setSliderBPMMax() {
+  bpmSlider.setAttribute('max',(isCPM ? '120':'1440')); // Modifica el máximo del slider para BPM/CPM
+  bpmSlider.value = bpm; // Modifica el máximo del slider para BPM/CPM
+} 
 
 // Actualiza el modo BPM/CPM cuando se cambia el select
 bpmcpm.addEventListener('input', () => {
@@ -255,6 +263,7 @@ bpmcpm.addEventListener('input', () => {
     bpmcpm.value = isCPM;
     bpm = parseInt(isCPM ? bpm/beatsPerMeasure:bpm*beatsPerMeasure);
     bpmInput.value = bpm;
+    setSliderBPMMax();
     startIfIntervalId(); // Reinicia el metrónomo
   }
 });
@@ -358,39 +367,26 @@ function updateHistoryPattern(pattern) {
   localStorage.setItem('historyPattern', JSON.stringify(historyPattern));
 }
 
-// Obtiene el siguiente patrón del historial
-function getHistoryNext() {
+// Obtiene el siguiente (o anterior) patrón del historial
+function getHistoryNext(rev=0) {
   let historyPattern = localStorage.getItem('historyPattern');
   if (historyPattern) {
     historyPattern = JSON.parse(historyPattern);
     let currentIndex = parseInt(localStorage.getItem('historyIndex')) || 0; 
 
-    // Avanza el índice, volviendo a 0 al final del historial
-    currentIndex = (currentIndex + 1) % historyPattern.length;
-    localStorage.setItem('historyIndex', currentIndex);
-
+    if (rev!=0) {
+      // Retrocede el índice, volviendo al final del historial al llegar a 0
+      currentIndex = (currentIndex - 1 + historyPattern.length) % historyPattern.length; 
+      localStorage.setItem('historyIndex', currentIndex); 
+    } else {
+      // Avanza el índice, volviendo a 0 al final del historial
+      currentIndex = (currentIndex + 1) % historyPattern.length;
+      localStorage.setItem('historyIndex', currentIndex);
+    }
     return historyPattern[currentIndex]; 
   } 
   return null; 
 }
-
-// Obtiene el patrón anterior del historial
-function getHistoryBack() {
-  let historyPattern = localStorage.getItem('historyPattern');
-  if (historyPattern) {
-    historyPattern = JSON.parse(historyPattern);
-    let currentIndex = parseInt(localStorage.getItem('historyIndex')) || 0; 
-
-    // Retrocede el índice, volviendo al final del historial al llegar a 0
-    currentIndex = (currentIndex - 1 + historyPattern.length) % historyPattern.length; 
-    localStorage.setItem('historyIndex', currentIndex); 
-
-    return historyPattern[currentIndex]; 
-  } 
-  return null; 
-}
-
-// HISTORIAL
 
 //  Función para actualizar el select "historial" con los patrones
 function updateHistorySelect() {
@@ -455,6 +451,17 @@ function generateRandomPattern(minLength, maxLength, zeroProportion) {
   return shuffleString(pattern);
 }
 
+
+//  Listener para el select "memoria"
+const memoriaSelect = document.getElementById('memoria');
+memoriaSelect.addEventListener('change', () => {
+  const selectedPattern = memoriaSelect.value; 
+  if (selectedPattern) {
+    modal.style.display = "none";
+    setPatron(selectedPattern);
+  }
+});
+
 //  Listener para el select "historial"
 const historialSelect = document.getElementById('historial');
 historialSelect.addEventListener('change', () => {
@@ -477,7 +484,7 @@ beatPatternInput.addEventListener('keyup', (event) => {
   // Navega por el historial de patrones con las flechas arriba/abajo
   if (event.key === 'ArrowUp') {
     event.preventDefault(); 
-    const previousString = getHistoryBack(); // Obtiene el patrón anterior
+    const previousString = getHistoryNext(1); // Obtiene el patrón anterior
     if (previousString !== null) {
       setPatron(previousString);
     }
@@ -616,7 +623,142 @@ teclas.forEach(boton => {
     beatPatternInput.focus();
   });
 });
-function detectMobileDevice() {
+
+// API
+function fechaMexico(timestamp) {
+  // Validar si el timestamp es un número válido
+  if (isNaN(timestamp) || timestamp <= 0) {
+    return "-fecha inválida-";
+  }
+  let fechaMexico = new Date(timestamp * 1000);
+  let opciones = { day: 'numeric', month: 'numeric', year: 'numeric' };
+  return fechaMexico.toLocaleDateString('es-MX', opciones);
+}
+
+function enviarPatron(patronRitmico) {
+  // Preguntar al usuario por el nombre de la clave
+  var nombreClave = prompt("Introduce un nombre para este patrón:");
+  if(nombreClave==undefined) return;
+  // Validaciones y reemplazos regex para asegurar compatibilidad con la API
+  nombreClave = nombreClave.replace(/[^a-z0-9\-_ ,.áéíóúüñ]/ig, '') // Eliminar caracteres inválidos
+  .trim() // Eliminar espacios al inicio y final
+  .substring(0, 50); // Limitar a 50 caracteres
+  
+  patronRitmico = patronRitmico.toUpperCase() // Convertir a mayúsculas
+  .replace(/[^A-I0]/g, '') // Eliminar caracteres inválidos
+  .substring(0, 100); // Limitar a 100 caracteres
+  
+  // Verificar si se obtuvieron valores válidos
+  if (nombreClave.length >= 5 && patronRitmico.length >= 4) {
+    // Crear un objeto FormData para enviar los datos
+    var formData = new FormData();
+    formData.append("n", nombreClave);
+    formData.append("p", patronRitmico);
+    
+    // Enviar la solicitud POST a la API
+    fetch("https://lengua.la/metro/api/api.php", {
+      method: "POST",
+      body: formData
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(response.error);
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Manejar la respuesta de la API (por ejemplo, mostrar un mensaje de éxito)
+      document.getElementById('resultado').innerText = data['mensaje'];
+      setTimeout("document.getElementById('resultado').innerText=''",5000);
+    })
+    .catch(error => {
+      // Manejar errores de la solicitud
+      console.error('Error:', error);
+      document.getElementById('resultado').innerText = 'Hubo un error. Inténtelo de nuevo en unos segundos.';
+      setTimeout("document.getElementById('resultado').innerText=''",3000);
+    });
+  } else {
+    // Mostrar un mensaje de error si los valores no son válidos
+    alert("Nombre de clave o patrón rítmico inválidos. Revise su formato.");
+  }
+}
+function cargarPatrones(pag) {
+  // Realizar la petición GET a la API con el número de página
+  fetch(`https://lengua.la/metro/api/api.php?i=${pag}`)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Error en la solicitud.');
+    }
+    return response.json();
+  })
+  .then(patrones => {
+    // Obtener el elemento select del contenedor
+    var contenedor = document.getElementById("memoria");
+    
+    // Limpiar cualquier opción previa en el contenedor
+    // contenedor.innerHTML = '<option value=""> - PATRONES GUARDADOS - </option>';
+    
+    // Iterar sobre la lista de patrones recibidos
+    patrones.forEach(patron => {
+      // Crear un nuevo elemento option
+      var opcion = document.createElement("option");
+      opcion.value = patron[2]; // El valor es el patrón rítmico
+      opcion.text = patron[1]+' ['+patron[2].length+': '+patron[2]+'] ('+fechaMexico(patron[0])+')'; // El texto es el nombre del patrón
+      
+      // Agregar la opción al contenedor select
+      contenedor.add(opcion);
+    });
+  })
+  .catch(error => {
+    // Manejar errores de la solicitud
+    //   console.error('Error:', error);
+    document.getElementById('resultado').innerText = error;
+    //   alert("Hubo un error al cargar los patrones. Por favor, inténtalo de nuevo.");
+  });
+}
+
+// BOTONERA
+function recorrerPatron(dir = 0) {
+  if (dir === 0) { // Izquierda
+    beatPattern = beatPattern.slice(1) + beatPattern[0];
+  } else { // Derecha
+    beatPattern = beatPattern.slice(-1) + beatPattern.slice(0, -1);
+  }
+  setPatron(beatPattern,true);
+}
+botonera.forEach(boton => {
+  boton.addEventListener('click', () => {
+    switch (boton.id) {
+      case 'teclado-switch':
+        const teclado = document.querySelectorAll('.teclado')[0];
+        if(teclado.style.display === 'none') {
+          teclado.style.display =  'grid';
+          beatPatternInput.setAttribute('inputmode', 'none');
+          beatPatternInput.focus();
+        } else {
+          teclado.style.display =  'none';
+          beatPatternInput.removeAttribute('inputmode');
+        }
+        
+        break;
+      case 'recorrer-left':
+        recorrerPatron(0);
+        beatPatternInput.focus();
+        break;
+      case 'recorrer-right':
+        recorrerPatron(1);
+        beatPatternInput.focus();
+        break;
+      case 'guardar-patron':
+        // Guardar patrón
+        enviarPatron(beatPattern);
+        break;
+      default:
+        break;
+    }
+  });
+});
+/* function detectMobileDevice() {
   const userAgentData = navigator.userAgentData;
   let isMobile = false;
   // 1. Check for mobile keywords in userAgentData.brands
@@ -649,12 +791,11 @@ if (!isMobileDevice) {
   const teclado = document.querySelectorAll('.teclado')[0];
   teclado.style.display='None';
   // Implement mobile-specific logic
-}
-
-
+} */
 
 // EJECUCIÓN INICIAL
-
+// Carga la lista de Patrones desde la API
+cargarPatrones(1);
 //  Llama a la función para actualizar el select al cargar la página
 updateHistorySelect();
 // Dibuja los colores de la rayas del circulo al iniciar
