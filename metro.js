@@ -684,6 +684,7 @@ function enviarPatron(patronRitmico) {
 }
 function cargarPatrones(pag) {
   // Realizar la petición GET a la API con el número de página
+  // fetch(`/metro/api/api.php?i=${pag}`)
   fetch(`https://lengua.la/metro/api/api.php?i=${pag}`)
   .then(response => {
     if (!response.ok) {
