@@ -12,6 +12,8 @@
  *                      [123589008,"Bla bla bla 2", "ABAB"]
  *                  ]
  * **/
+header("Access-Control-Allow-Origin: https://sanxofon.github.io"); // Replace with your domain
+header("Access-Control-Allow-Methods: GET, POST"); // Allow specific methods
 
 $db = 'db.json';
 // Base de datos de patrones rítmicos (puedes reemplazar esto con una base de datos real)
