@@ -61,6 +61,8 @@ let currentBeat = 0; // Índice del beat actual dentro del patrón
 let intervalId; // ID del intervalo para controlarlo
 let soundAllowed = false; // Está permitido el sonido ya? Maldito IPhone
 
+const APIURL = "https://"+"lengua.la/metro/api/api.php";
+
 // Actualiza la UI con los valores por defecto
 bpmInput.value = bpm;
 bpmSlider.value = bpm;
@@ -689,7 +691,7 @@ function enviarPatron(patronRitmico) {
     formData.append("p", patronRitmico);
     
     // Enviar la solicitud POST a la API
-    fetch("https://sanxofon.github.io/metro/api/api.php", {
+    fetch(APIURL, {
       method: "POST",
       body: formData
     })
@@ -702,7 +704,10 @@ function enviarPatron(patronRitmico) {
     .then(data => {
       // Manejar la respuesta de la API (por ejemplo, mostrar un mensaje de éxito)
       document.getElementById('resultado').innerText = data['mensaje'];
-      setTimeout("document.getElementById('resultado').innerText=''",5000);
+      setTimeout(function(){
+        document.getElementById('resultado').innerText='';
+        cargarPatrones(1);
+      },5000);
     })
     .catch(error => {
       // Manejar errores de la solicitud
@@ -715,10 +720,9 @@ function enviarPatron(patronRitmico) {
     alert("Nombre de clave o patrón rítmico inválidos. Revise su formato.");
   }
 }
-function cargarPatrones(pag) {
+function cargarPatrones(pag=1) {
   // Realizar la petición GET a la API con el número de página
-  // fetch(`/metro/api/api.php?i=${pag}`)
-  fetch(`https://lengua.la/metro/api/api.php?i=${pag}`)
+  fetch(APIURL+`?i=${pag}`)
   .then(response => {
     if (!response.ok) {
       throw new Error('Error en la solicitud.');
@@ -729,9 +733,7 @@ function cargarPatrones(pag) {
     // Obtener el elemento select del contenedor
     var contenedor = document.getElementById("memoria");
     // Limpiar cualquier opción previa en el contenedor
-    if(pag<=1) {
-      contenedor.innerHTML = '';
-    }
+    contenedor.innerHTML = '';
     // Iterar sobre la lista de patrones recibidos
     patrones.forEach(patron => {
       // Crea los enlaces dentro del div
@@ -798,6 +800,11 @@ botonera.forEach(boton => {
       case 'recorrer-right':
         recorrerPatron(1);
         beatPatternInput.focus();
+        break;
+      case 'abrir-patrones':
+        // Abrir patrones
+        cargarPatrones(beatPattern);
+        modal.style.display = "block";
         break;
       case 'guardar-patron':
         // Guardar patrón
