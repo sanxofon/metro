@@ -1,4 +1,4 @@
-const CACHE_NAME = 'metronomo-cache-v7.32'; // Increment version with each update
+const CACHE_NAME = 'metronomo-cache-v7.4'; // Increment version with each update
 const urlsToCache = [
   '/metro/',
   'index.html',

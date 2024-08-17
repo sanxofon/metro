@@ -293,9 +293,23 @@ select, input {
   filter: invert(100%);
 }
 
-#historial,#memoria {
+#historial, #memoria {
   font-size: 1em;
   width: 100%;
+  max-height: 160px;
+  overflow-x: hidden;
+  text-align: left;
+}
+
+#memoria .patron, #historial .patron {
+  max-height: 180px;
+  overflow: auto;
+  border-bottom: 1px solid #888;
+  cursor: pointer;
+}
+
+#memoria .patron:hover, #historial .patron:hover {
+  background-color: #eee;
 }
 
 /*  Modal de configuración  */

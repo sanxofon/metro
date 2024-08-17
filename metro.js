@@ -389,7 +389,7 @@ function getHistoryNext(rev=0) {
 }
 
 //  Función para actualizar el select "historial" con los patrones
-function updateHistorySelect() {
+/* function updateHistorySelect() {
   const historialSelect = document.getElementById('historial');
   historialSelect.innerHTML = ''; //  Limpia las opciones existentes
 
@@ -410,6 +410,38 @@ function updateHistorySelect() {
       historialSelect.appendChild(option);
     });
   }
+} */
+function updateHistoryDiv() {
+  const historialDiv = document.getElementById('historial');
+  historialDiv.innerHTML = ''; // Limpia los enlaces existentes
+
+  let historyPattern = localStorage.getItem('historyPattern');
+  if (historyPattern) {
+    historyPattern = JSON.parse(historyPattern);
+
+    // Trunca el historial a 100 elementos si es más largo
+    if (historyPattern.length > 100) {
+      historyPattern = historyPattern.slice(0, 100);
+    }
+
+    // Crea los enlaces dentro del div
+    historyPattern.forEach(pattern => {
+      const link = document.createElement('div');
+      link.textContent = (pattern.length<10 ? " "+pattern.length:pattern.length) + ': ' + pattern;
+
+      // Agrega la clase 'history-link' para estilizar 
+      link.classList.add('patron'); 
+
+      // Agrega un evento click a cada enlace
+      link.addEventListener('click', () => {
+        // Lógica que se ejecutaba al seleccionar una opción del select
+        // Aquí debes reemplazar con tu código específico 
+        setPatron(pattern,true);
+      });
+
+      historialDiv.appendChild(link);
+    });
+  }
 }
 
 function setPatron(pattern,setInput=true) {
@@ -419,7 +451,8 @@ function setPatron(pattern,setInput=true) {
   beatsPerMeasure = beatPattern.length; //  Recalcula beats por compás
   patternLenDiv.innerHTML = beatsPerMeasure; //  Actualiza el div con la longitud
   updateHistoryPattern(beatPattern); // Actualiza el historial de patrones
-  updateHistorySelect(); // Actualiza el select del historial
+  // updateHistorySelect(); // Actualiza el select del historial
+  updateHistoryDiv(); // Actualiza la lista del historial
   createHourMarks(beatsPerMeasure);
   startIfIntervalId(); // Reinicia el metrónomo
 }
@@ -453,24 +486,24 @@ function generateRandomPattern(minLength, maxLength, zeroProportion) {
 
 
 //  Listener para el select "memoria"
-const memoriaSelect = document.getElementById('memoria');
+/* const memoriaSelect = document.getElementById('memoria');
 memoriaSelect.addEventListener('change', () => {
   const selectedPattern = memoriaSelect.value; 
   if (selectedPattern) {
     modal.style.display = "none";
     setPatron(selectedPattern);
   }
-});
+}); */
 
 //  Listener para el select "historial"
-const historialSelect = document.getElementById('historial');
+/* const historialSelect = document.getElementById('historial');
 historialSelect.addEventListener('change', () => {
   const selectedPattern = historialSelect.value; 
   if (selectedPattern) {
     modal.style.display = "none";
     setPatron(selectedPattern);
   }
-});
+}); */
 
 beatPatternInput.addEventListener('input', (event) => {
   setPatron(beatPatternInput.value.toUpperCase().replace(/[^A-I0]/g, ''),false);
@@ -541,7 +574,7 @@ spanClose.onclick = function() {
 }
 
 //  Cerrar el modal al hacer clic fuera del contenido
-window.onclick = function(event) {
+modal.onclick = function(event) {
   if (event.target == modal) {
     modal.style.display = "none";
   }
@@ -695,19 +728,35 @@ function cargarPatrones(pag) {
   .then(patrones => {
     // Obtener el elemento select del contenedor
     var contenedor = document.getElementById("memoria");
-    
     // Limpiar cualquier opción previa en el contenedor
-    // contenedor.innerHTML = '<option value=""> - PATRONES GUARDADOS - </option>';
-    
+    if(pag<=1) {
+      contenedor.innerHTML = '';
+    }
     // Iterar sobre la lista de patrones recibidos
     patrones.forEach(patron => {
-      // Crear un nuevo elemento option
-      var opcion = document.createElement("option");
+      // Crea los enlaces dentro del div
+      const link = document.createElement('div');
+      link.textContent = patron[1]+' ['+patron[2].length+': '+patron[2]+'] ('+fechaMexico(patron[0])+')';
+      // Agrega la clase 'history-link' para estilizar 
+      link.classList.add('patron');
+      // Agrega un evento click a cada enlace
+      link.addEventListener('click', () => {
+        // Lógica que se ejecutaba al seleccionar una opción del select
+        // Aquí debes reemplazar con tu código específico 
+        setPatron(patron[2],true);
+        modal.style.display = "none";
+      });
+      contenedor.appendChild(link);
+      // contenedor.add(historialDiv);
+
+      // Crear un nuevo elemento option en select
+      /* var opcion = document.createElement("option");
       opcion.value = patron[2]; // El valor es el patrón rítmico
       opcion.text = patron[1]+' ['+patron[2].length+': '+patron[2]+'] ('+fechaMexico(patron[0])+')'; // El texto es el nombre del patrón
       
       // Agregar la opción al contenedor select
-      contenedor.add(opcion);
+      contenedor.add(opcion); */
+
     });
   })
   .catch(error => {
@@ -795,11 +844,8 @@ if (!isMobileDevice) {
 } */
 
 // EJECUCIÓN INICIAL
-// Carga la lista de Patrones desde la API
-cargarPatrones(1);
-//  Llama a la función para actualizar el select al cargar la página
-updateHistorySelect();
-// Dibuja los colores de la rayas del circulo al iniciar
-createHourMarks(beatsPerMeasure);
-// Muestra la longitud del patrón al iniciar
-updatePatternLen();
+cargarPatrones(1); // Carga la lista de Patrones desde la API
+// updateHistorySelect(); // Llena el select del historial
+updateHistoryDiv(); // Actualiza la lista del historial
+createHourMarks(beatsPerMeasure); // Dibuja los colores de la rayas del circulo al iniciar
+updatePatternLen(); // Muestra la longitud del patrón al iniciar
