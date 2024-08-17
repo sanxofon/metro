@@ -105,10 +105,8 @@
   margin: initial;
 }
 #guardar-patron {
-  background-color: rgb(180, 223, 137) !important;
-  filter: none !important;
+  font-size: 1.4em;
 }
-#guardar-patron:hover {
-  background-color: chartreuse !important;
-  filter: none !important;
+#abrir-patrones {
+  font-size: 1.6em;
 }
