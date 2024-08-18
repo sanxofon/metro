@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Brújula con Canvas</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+      }
+
+      #compass {
+        background-color: #fff;
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="compass" width="300" height="300"></canvas>
+    <script>
+const canvas = document.getElementById("compass");
+const ctx = canvas.getContext("2d");
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 2;
+const radius = canvas.width * 0.4;
+
+function drawCompass(heading) {
+  // Limpiar el canvas antes de dibujar
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Dibujar círculo exterior
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+  ctx.stroke();
+
+  // Dibujar líneas y letras de dirección
+  const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+  for (let i = 0; i < 8; i++) {
+    const angle = (i * Math.PI) / 4;
+    const x = centerX + radius * Math.sin(angle);
+    const y = centerY - radius * Math.cos(angle);
+
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+
+    // Añadir letras de dirección
+    ctx.font = "12px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(directions[i], x, y);
+  }
+
+  // Dibujar triángulo para el Norte (rojo)
+  ctx.fillStyle = "red";
+  ctx.beginPath();
+  ctx.moveTo(centerX, centerY - radius + 10);
+  ctx.lineTo(centerX - 5, centerY - radius - 10);
+  ctx.lineTo(centerX + 5, centerY - radius - 10);
+  ctx.closePath();
+  ctx.fill();
+
+  // Rotar el canvas para reflejar la orientación del dispositivo
+  ctx.translate(centerX, centerY); // Mover el origen al centro
+  ctx.rotate((-heading * Math.PI) / 180); // Convertir a radianes y rotar
+  ctx.translate(-centerX, -centerY); // Regresar al origen original
+}
+
+function handleOrientation(event) {
+  const heading = event.alpha; // Valor en grados (0-360)
+  drawCompass(heading);
+}
+
+if ("ondeviceorientationabsolute" in window) {
+  window.addEventListener("deviceorientationabsolute", handleOrientation, true);
+} else if ("ondeviceorientation" in window) {
+  window.addEventListener("deviceorientation", handleOrientation, true);
+} else {
+  // La API de orientación no es compatible
+  alert("Lo siento, tu dispositivo no admite la API de orientación del dispositivo.");
+}
+
+// Solicitar permiso para acceder a los sensores de movimiento (si es necesario)
+if (typeof DeviceMotionEvent.requestPermission === "function") {
+  DeviceMotionEvent.requestPermission()
+    .then((permissionState) => {
+      if (permissionState === "granted") {
+        // Permiso concedido, empezar a escuchar los eventos de orientación
+        window.addEventListener("deviceorientation", handleOrientation, true);
+      } else {
+        // Permiso denegado
+        alert("Permiso para acceder a los sensores denegado. La brújula no funcionará.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error al solicitar permiso:", error);
+    });
+} else {
+  // La API de permisos no es compatible
+  // Puedes empezar a escuchar eventos de orientación sin solicitar permiso explícito
+  // pero el usuario podría no haber dado su consentimiento.
+  window.addEventListener("deviceorientation", handleOrientation, true);
+}
+drawCompass();
+    </script>
+  </body>
+</html>
