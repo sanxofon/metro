@@ -373,6 +373,9 @@ body.dark-mode .recuadro.reloj {
 body.dark-mode a {
   color: rgb(255, 235, 125);
 }
+body.dark-mode .invertfilterdark {
+  filter: invert();
+}
 
 /* body.dark-mode select {
   background-color: #000;
