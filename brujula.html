@@ -109,6 +109,16 @@ if (typeof DeviceMotionEvent.requestPermission === "function") {
   window.addEventListener("deviceorientation", handleOrientation, true);
 }
 drawCompass();
+if ('Magnetometer' in window) {
+  // El sensor magnetómetro está disponible en el dispositivo
+  console.log("Magnetómetro disponible");
+
+  // Puedes solicitar permiso para acceder al sensor y comenzar a utilizarlo.
+} else {
+  // El sensor magnetómetro no está disponible en el dispositivo
+  alert("Magnetómetro no disponible");
+  // Puedes mostrar un mensaje al usuario o usar una alternativa.
+}
     </script>
   </body>
 </html>
