@@ -477,7 +477,7 @@ function enviarPatron(patronRitmico) {
       document.getElementById('resultado').innerText = data['mensaje'];
       setTimeout(function(){
         document.getElementById('resultado').innerText='';
-        cargarPatrones(1);
+        // cargarPatrones(1);
       },5000);
     })
     .catch(error => {
@@ -491,40 +491,48 @@ function enviarPatron(patronRitmico) {
     alert("Nombre de clave o patrón rítmico inválidos. Revise su formato.");
   }
 }
+function agregarPatronesMemoria(patrones) {
+  // Obtener el elemento select del contenedor
+  var contenedor = document.getElementById("memoria");
+  // Limpiar cualquier opción previa en el contenedor
+  contenedor.innerHTML = '';
+  // Iterar sobre la lista de patrones recibidos
+  patrones.forEach(patron => {
+    // Crea los enlaces dentro del div
+    const link = document.createElement('div');
+    link.textContent = patron[1]+' ['+patron[2].length+': '+patron[2]+'] ('+fechaMexico(patron[0])+')';
+    // Agrega la clase 'history-link' para estilizar 
+    link.classList.add('patron');
+    // Agrega un evento click a cada enlace
+    link.addEventListener('click', () => {
+      setPatron(patron[2],true);
+      modal.style.display = "none";
+    });
+    contenedor.appendChild(link);
+  });
+}
 function cargarPatrones(pag=1) {
   // Realizar la petición GET a la API con el número de página
   fetch(APIURL+`?i=${pag}`)
   .then(response => {
     if (!response.ok) {
+      const patrones = localStorage.getItem('patrones');
+      if (patrones) {
+        agregarPatronesMemoria(JSON.parse(memoriaPatrones));
+      }
       throw new Error('Error en la solicitud.');
     }
     return response.json();
   })
   .then(patrones => {
-    // Obtener el elemento select del contenedor
-    var contenedor = document.getElementById("memoria");
-    // Limpiar cualquier opción previa en el contenedor
-    contenedor.innerHTML = '';
-    // Iterar sobre la lista de patrones recibidos
-    patrones.forEach(patron => {
-      // Crea los enlaces dentro del div
-      const link = document.createElement('div');
-      link.textContent = patron[1]+' ['+patron[2].length+': '+patron[2]+'] ('+fechaMexico(patron[0])+')';
-      // Agrega la clase 'history-link' para estilizar 
-      link.classList.add('patron');
-      // Agrega un evento click a cada enlace
-      link.addEventListener('click', () => {
-        setPatron(patron[2],true);
-        modal.style.display = "none";
-      });
-      contenedor.appendChild(link);
-    });
+    agregarPatronesMemoria(patrones);
+    localStorage.setItem('memoriaPatrones', JSON.stringify(patrones));
   })
   .catch(error => {
     // Manejar errores de la solicitud
-    //   console.error('Error:', error);
-    document.getElementById('resultado').innerText = error;
-    //   alert("Hubo un error al cargar los patrones. Por favor, inténtalo de nuevo.");
+    console.error('Error:', error);
+    document.getElementById('resultado').innerText = 'Hubo un error al cargar los patrones. Por favor, inténtalo de nuevo.';
+    // alert("Hubo un error al cargar los patrones. Por favor, inténtalo de nuevo.");
   });
 }
 
@@ -536,6 +544,12 @@ function recorrerPatron(dir = 0) {
     beatPattern = beatPattern.slice(-1) + beatPattern.slice(0, -1);
   }
   setPatron(beatPattern,true);
+}
+
+// Abrir modal de Memoria e Historial
+function showSettings() {
+  cargarPatrones(1);
+  modal.style.display = "block";
 }
 
 // -----------------------------------------------------------
@@ -661,8 +675,7 @@ beatPatternInput.addEventListener('keyup', (event) => {
 //  Abrir el modal al hacer clic en el icono
 settingsIcon.onclick = function() {
   // Abrir patrones
-  cargarPatrones(beatPattern);
-  modal.style.display = "block";
+  showSettings();
 }
 
 //  Cerrar el modal al hacer clic en el botón de cierre
@@ -781,8 +794,7 @@ botonera.forEach(boton => {
         break;
       case 'abrir-patrones':
         // Abrir patrones
-        cargarPatrones(1);
-        modal.style.display = "block";
+        showSettings();
         break;
       case 'guardar-patron':
         // Guardar patrón
