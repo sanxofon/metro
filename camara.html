@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cámara PWA</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: sans-serif;
+    }
+    
+    #video {
+      width: 320px;
+      height: 240px;
+      border: 1px solid black;
+    }
+    
+    #controls {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  
+  <h1>Cámara PWA</h1>
+  
+  <canvas id="canvas"></canvas> <video id="video" style="display: none;"></video>
+  
+  <div id="controls">
+    <button id="capture">Capturar Foto</button>
+    <label for="cameraSwitch">Cambiar Cámara</label>
+    <input type="checkbox" id="cameraSwitch">
+    <select id="effectSelect">
+      <option value="">Sin efecto</option>
+      <option value="horizontal" selected>Reflejo Horizontal</option>
+      <option value="horizontal-left">Reflejo Horizontal Izquierdo</option>
+      <option value="vertical">Reflejo Vertical</option>
+      <option value="vertical-down">Reflejo Vertical Abajo</option>
+      <option value="quadruple-top-left">Cuádruple reflejo: Superior Izquierdo</option>
+      <option value="quadruple-top-right">Cuádruple reflejo: Superior Derecho</option>
+      <option value="quadruple-bottom-left">Cuádruple reflejo: Inferior Izquierdo</option>
+      <option value="quadruple-bottom-right">Cuádruple reflejo: Inferior Derecho</option>
+    </select>
+
+        
+  </div>
+  
+<script>
+const canvas = document.getElementById('canvas');
+const video = document.getElementById('video');
+const captureButton = document.getElementById('capture');
+const cameraSwitch = document.getElementById('cameraSwitch');
+const effectSelect = document.getElementById('effectSelect'); // Nuevo selector para efectos
+const context = canvas.getContext('2d');
+
+let currentStream;
+
+// Función para obtener el stream de la cámara
+async function getCameraStream(facingMode = 'user') {
+  try {
+    const constraints = {
+      video: { facingMode },
+    };
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    return stream;
+  } catch (error) {
+    console.error('Error al obtener el stream de la cámara:', error);
+    return null;
+  }
+}
+
+// Función para iniciar la cámara
+async function startCamera() {
+  const facingMode = cameraSwitch.checked ? 'environment' : 'user';
+  currentStream = await getCameraStream(facingMode);
+
+  if (currentStream) {
+    video.srcObject = currentStream;
+    // Esperar a que el video tenga datos antes de iniciar la actualización del canvas
+    video.addEventListener('loadeddata', () => {
+      requestAnimationFrame(updateCanvas);
+    });
+    video.play();
+  }
+}
+
+// Función para aplicar el efecto seleccionado
+function applyEffect(imageData) {
+  const data = imageData.data;
+  const width = imageData.width;
+  const height = imageData.height;
+
+  switch (effectSelect.value) {
+    case 'horizontal':
+      for (let y = 0; y < height; y++) {
+        for (let x = width / 2; x < width; x++) {
+          const sourceIndex = (y * width + (width - x - 1)) * 4;
+          const targetIndex = (y * width + x) * 4;
+          data[targetIndex] = data[sourceIndex];
+          data[targetIndex + 1] = data[sourceIndex + 1];
+          data[targetIndex + 2] = data[sourceIndex + 2];
+          data[targetIndex + 3] = data[sourceIndex + 3];
+        }
+      }
+      break;
+
+    case 'horizontal-left':
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width / 2; x++) {
+          const sourceIndex = (y * width + (width - x - 1)) * 4;
+          const targetIndex = (y * width + x) * 4;
+          data[targetIndex] = data[sourceIndex];
+          data[targetIndex + 1] = data[sourceIndex + 1];
+          data[targetIndex + 2] = data[sourceIndex + 2];
+          data[targetIndex + 3] = data[sourceIndex + 3];
+        }
+      }
+      break;
+
+    case 'vertical':
+      for (let y = height / 2; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const sourceIndex = ((height - y - 1) * width + x) * 4;
+          const targetIndex = (y * width + x) * 4;
+          data[targetIndex] = data[sourceIndex];
+          data[targetIndex + 1] = data[sourceIndex + 1];
+          data[targetIndex + 2] = data[sourceIndex + 2];
+          data[targetIndex + 3] = data[sourceIndex + 3];
+        }
+      }
+      break;
+
+    case 'vertical-down':
+      for (let y = 0; y < height / 2; y++) {
+        for (let x = 0; x < width; x++) {
+          const sourceIndex = ((height - y - 1) * width + x) * 4;
+          const targetIndex = (y * width + x) * 4;
+          data[targetIndex] = data[sourceIndex];
+          data[targetIndex + 1] = data[sourceIndex + 1];
+          data[targetIndex + 2] = data[sourceIndex + 2];
+          data[targetIndex + 3] = data[sourceIndex + 3];
+        }
+      }
+      break;
+
+    case 'quadruple-top-left':
+      applyQuadrupleReflection(data, width, height, 0, 0);
+      break;
+
+    case 'quadruple-top-right':
+      applyQuadrupleReflection(data, width, height, width / 2, 0);
+      break;
+
+    case 'quadruple-bottom-left':
+      applyQuadrupleReflection(data, width, height, 0, height / 2);
+      break;
+
+    case 'quadruple-bottom-right':
+      applyQuadrupleReflection(data, width, height, width / 2, height / 2);
+      break;
+
+    default:
+      // Sin efecto
+      break;
+  }
+}
+
+// Función para aplicar el reflejo cuádruple desde un punto de origen
+function applyQuadrupleReflection(data, width, height, startX, startY) {
+  const quadrantWidth = width / 2;
+  const quadrantHeight = height / 2;
+
+  for (let y = 0; y < quadrantHeight; y++) {
+    for (let x = 0; x < quadrantWidth; x++) {
+      const sourceIndex = ((startY + y) * width + (startX + x)) * 4;
+
+      // Reflejar horizontalmente 
+      let targetX = startX + quadrantWidth + (quadrantWidth - x - 1);
+      let targetY = startY + y;
+      let targetIndex = (targetY * width + targetX) * 4;
+      copyPixelData(data, sourceIndex, targetIndex);
+
+      // Reflejar verticalmente
+      targetX = startX + x;
+      targetY = (startY - y - 1 + quadrantHeight * 2) % height; // Corrección 
+      targetIndex = (targetY * width + targetX) * 4;
+      copyPixelData(data, sourceIndex, targetIndex);
+
+      // Reflejar diagonalmente 
+      targetX = startX + quadrantWidth + (quadrantWidth - x - 1);
+      targetY = (startY - y - 1 + quadrantHeight * 2) % height; // Corrección
+      targetIndex = (targetY * width + targetX) * 4;
+      copyPixelData(data, sourceIndex, targetIndex);
+    }
+  }
+}
+
+// Función auxiliar para copiar los datos de un píxel
+function copyPixelData(data, sourceIndex, targetIndex) {
+  data[targetIndex] = data[sourceIndex];
+  data[targetIndex + 1] = data[sourceIndex + 1];
+  data[targetIndex + 2] = data[sourceIndex + 2];
+  data[targetIndex + 3] = data[sourceIndex + 3];
+}
+
+// Función para actualizar el canvas con el efecto espejo
+function updateCanvas() {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  context.drawImage(video, 0, 0);
+
+  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  applyEffect(imageData); // Aplicar el efecto seleccionado
+  context.putImageData(imageData, 0, 0);
+
+  requestAnimationFrame(updateCanvas);
+}
+
+// Función para tomar una foto
+// Función para tomar una foto (modificada)
+async function takePicture() {
+  // Crear un canvas temporal para aplicar el efecto
+  const canvasTmp = document.createElement('canvas');
+  const contextTmp = canvasTmp.getContext('2d');
+
+  canvasTmp.width = video.videoWidth;
+  canvasTmp.height = video.videoHeight;
+
+  // Dibujar la imagen del video en el canvas temporal
+  contextTmp.drawImage(video, 0, 0);
+
+  // Obtener los datos de la imagen del canvas temporal
+  const imageData = contextTmp.getImageData(0, 0, canvasTmp.width, canvasTmp.height);
+
+  // Aplicar el efecto seleccionado al canvas temporal
+  applyEffect(imageData); 
+  contextTmp.putImageData(imageData, 0, 0);
+
+  // Convertir la imagen del canvas temporal a data URL
+  const dataURL = canvasTmp.toDataURL('image/jpeg');
+
+  // Obtener fecha y hora actual para el nombre del archivo
+  const now = new Date();
+  const fileName = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}-${now.getHours().toString().padStart(2, '0')}-${now.getMinutes().toString().padStart(2, '0')}-${now.getSeconds().toString().padStart(2, '0')}.jpg`;
+
+  // Crear un enlace para descargar la imagen
+  const a = document.createElement('a');
+  a.href = dataURL;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// Agregar listeners de eventos
+captureButton.addEventListener('click', takePicture);
+cameraSwitch.addEventListener('change', startCamera);
+effectSelect.addEventListener('change', () => requestAnimationFrame(updateCanvas)); // Actualizar al cambiar el efecto
+
+document.addEventListener('keydown', (event) => {
+  if (event.code === 'Space') { 
+    event.preventDefault(); // Prevenir el comportamiento por defecto de la barra espaciadora
+    takePicture();
+  }
+});
+
+// Iniciar la cámara al cargar la página
+startCamera();
+</script>
+  
+</body>
+</html>

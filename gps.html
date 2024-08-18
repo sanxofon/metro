@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prueba de Concepto - GPS</title>
+<style>
+#map-container {
+  width: 100%;
+  height: 500px;
+  border: 1px solid #ccc;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Estilos para el selector de zoom */
+#zoom {
+  width: 100%; /* Ajusta el ancho del selector */
+  margin-top: 10px; /* Espacio superior */
+}
+
+#zoom::-webkit-slider-thumb { 
+  -webkit-appearance: none; /* Personalizar apariencia en Chrome/Safari */
+  appearance: none; /* Personalizar apariencia en otros navegadores */
+  width: 15px; /* Ancho del deslizador */
+  height: 15px; /* Alto del deslizador */
+  background: #4CAF50; /* Color de fondo del deslizador */
+  cursor: pointer; /* Cambiar el cursor a mano */
+}
+</style>
+</head>
+<body>
+    <div id="map-container">
+    <canvas id="map"></canvas>
+    </div>
+    <div>
+    <label for="zoom">Zoom (metros):</label>
+    <input type="range" id="zoom" min="100" max="10000" value="5000">
+    </div>
+<script>
+const canvas = document.getElementById("map");
+const ctx = canvas.getContext("2d");
+const scale = 100; // Escala base
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 2;
+let zoomLevel = 5000; // Nivel de zoom inicial (metros)
+let initialPosition = null;
+const positions = []; 
+
+// Función para dibujar un punto
+function drawPoint(x, y) {
+  ctx.beginPath();
+  ctx.arc(x, y, 3, 0, 2 * Math.PI); 
+  ctx.fill();
+}
+
+// Función para dibujar la ruta en el canvas
+function drawPath() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "red"; // Color del punto
+
+  if (initialPosition) {
+    // Calcular la traslación en función del zoom
+    const translateX = centerX - initialPosition.x * (zoomLevel / scale);
+    const translateY = centerY - initialPosition.y * (zoomLevel / scale);
+
+    ctx.save(); // Guardar el estado del canvas
+    ctx.translate(translateX, translateY); // Aplicar traslación
+
+    // Dibujar el punto inicial en el centro
+    drawPoint(centerX, centerY);
+
+    // Dibujar los demás puntos con traslación
+    ctx.fillStyle = "blue"; // Cambiar color de puntos
+    for (const position of positions) {
+      drawPoint(position.x * (zoomLevel / scale), position.y * (zoomLevel / scale));
+    }
+    ctx.restore(); // Restaurar el estado del canvas
+  }
+}
+
+// Función para manejar la obtención de la posición
+function handlePosition(position) {
+  const { latitude, longitude } = position.coords;
+
+  const newPosition = { x: longitude * scale, y: latitude * scale };
+  if (!initialPosition) {
+    initialPosition = newPosition; // Establecer posición inicial
+  }
+  positions.push(newPosition);
+
+  drawPath();
+}
+
+// Función para manejar errores de geolocalización
+function handleError(error) {
+  console.error("Error al obtener la ubicación:", error);
+}
+
+// Agregar un evento al selector de zoom
+const zoomSelect = document.getElementById("zoom");
+zoomSelect.addEventListener("change", () => {
+  zoomLevel = zoomSelect.value;
+  drawPath(); // Redibujar la ruta con el nuevo zoom
+});
+
+// Verificar si la geolocalización está disponible en el navegador
+if ("geolocation" in navigator) {
+  // Solicitar permisos y obtener la posición cada 60 segundos
+  navigator.geolocation.watchPosition(
+    handlePosition,
+    handleError,
+    { timeout: 60000 } // Intervalo de actualización de 60 segundos
+  );
+} else {
+  console.error("La geolocalización no está disponible en este navegador.");
+}
+</script>
+</body>
+</html>
