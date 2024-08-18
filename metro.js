@@ -2,7 +2,8 @@
 // Autor: Santiago Chávez Novaro
 // Código Libre: Haz lo que quieras
 
-// Elementos del DOM
+// Elementos del DOM --------------------------------------------
+
 // Botón Play
 const startButton = document.getElementById('startButton');
 // Botón Stop
@@ -40,9 +41,17 @@ const teclas = document.querySelectorAll('.teclado .boton');
 const botonera = document.querySelectorAll('.botonera button');
 
 
+// SETTINGS
+//  Modal de configuración:  obtener los elementos
+const settingsIcon = document.querySelector('.settings-icon');
+const modal = document.getElementById("settingsModal");
+const spanClose = document.getElementsByClassName("close")[0];
+
 //  DARK/LIGHT MODE SWITCH
 const darkModeSwitch = document.getElementById('darkModeSwitch');
 const body = document.body;
+
+// variables ---------------------------------------------------------
 
 // Valores por defecto de la UI
 let beatPattern = localStorage.getItem('beatPattern') || 'ABA0'; // Default Patrón de golpes
@@ -61,6 +70,8 @@ let currentBeat = 0; // Índice del beat actual dentro del patrón
 let intervalId; // ID del intervalo para controlarlo
 let soundAllowed = false; // Está permitido el sonido ya? Maldito IPhone
 
+// Esta es la API que monté que acepta POST y GET de cualquier servidor para guardar las claves colectivamente.
+// Obvio me reservo el derecho a borrar repeticiones y basura.
 const APIURL = "https://"+"lengua.la/metro/api/api.php";
 
 // Actualiza la UI con los valores por defecto
@@ -121,8 +132,8 @@ function transT2N(s) { // Recibe una cadena de mayúsculas
 }
 let listPattern = transT2N(beatPattern); // Default lista de golpes en números
 
-
-// Funciones
+// ---------------------------------------------------
+// Funciones -----------------------------------------
 
 // Guarda la configuración actual en localStorage
 function saveSettings() {
@@ -139,7 +150,7 @@ function createHourMarks(beatsPerMeasure) {
   // Borra las marcas existentes
   const elementsToDelete = document.querySelectorAll('.hour-mark');
   elementsToDelete.forEach(element => element.remove());
-
+  
   // Crea nuevas marcas según el número de beats por compás
   for (let i = 0; i < beatsPerMeasure; i++) {
     const hourMark = document.createElement('div');
@@ -148,7 +159,7 @@ function createHourMarks(beatsPerMeasure) {
     if(listPattern[i]>0 && !selectedNumbers.includes(listPattern[i])) {
       hourMark.classList.add('beat'+listPattern[i]);
     }
-
+    
     // Calcula el ángulo y rota la marca
     const angle = (i / beatsPerMeasure) * 360;
     hourMark.style.transform = `rotate(${angle}deg)`;
@@ -197,8 +208,8 @@ function startMetronome() {
   saveSettings(); // Guarda la configuración actual
   
   // createHourMarks(beatsPerMeasure); // Crea las marcas de hora en el reloj
-
-
+  
+  
   // Inicia el intervalo para la reproducción de los beats
   intervalId = setInterval(() => {
     playBeat(listPattern[currentBeat]); // Reproduce el sonido del beat actual
@@ -207,7 +218,7 @@ function startMetronome() {
     
     currentBeat = (currentBeat + 1) % beatsPerMeasure; // Avanza al siguiente beat
   }, millisecondsPerBeat);
-
+  
   // Actualiza el estado de los botones
   startButton.disabled = true;
   stopButton.disabled = false;
@@ -232,83 +243,10 @@ function startIfIntervalId() {
   }  
 }
 
-// Event Listeners
-
-// Actualiza el BPM cuando se cambia el input de texto
-bpmInput.addEventListener('input', () => {
-  const testBPM = parseInt(bpmInput.value);
-  if (bpmInput.value=='' || testBPM<=0) {
-    bpm = 1;
-  } else {
-    bpm = testBPM;
-  }
-  bpmSlider.value = bpm;
-  startIfIntervalId(); // Reinicia el metrónomo
-});
-
-// Actualiza el BPM cuando se cambia el slider
-bpmSlider.addEventListener('input', () => {
-  bpm = parseInt(bpmSlider.value);
-  bpmInput.value = bpm;
-  startIfIntervalId(); // Reinicia el metrónomo
-});
-function setSliderBPMMax() {
-  bpmSlider.setAttribute('max',(isCPM ? '120':'1440')); // Modifica el máximo del slider para BPM/CPM
-  bpmSlider.value = bpm; // Modifica el máximo del slider para BPM/CPM
-} 
-
-// Actualiza el modo BPM/CPM cuando se cambia el select
-bpmcpm.addEventListener('input', () => {
-  const tmpBC = parseInt(bpmcpm.value);
-  if (tmpBC!=isCPM) {
-    isCPM = tmpBC;
-    bpmcpm.value = isCPM;
-    bpm = parseInt(isCPM ? bpm/beatsPerMeasure:bpm*beatsPerMeasure);
-    bpmInput.value = bpm;
-    setSliderBPMMax();
-    startIfIntervalId(); // Reinicia el metrónomo
-  }
-});
-
-// Actualiza el volumen general cuando se cambia el slider
-volumeSlider.addEventListener('input', () => {
-  volumen = parseFloat(volumeSlider.value);
-  sound.forEach(s => s.volume(volumen)); // Actualiza el volumen de todos los sonidos
-  saveSettings(); // Guarda la configuración
-});
-
-// Inicia el metrónomo al hacer clic en el botón de inicio
-startButton.addEventListener('click', () => {
-  if (!soundAllowed) {
-    // First time click, request permission and start metronome
-    sound[0].play(); // This will trigger the browser's autoplay permission prompt
-    soundAllowed = true; // Mark sound as allowed
-  }
-  startMetronome();
-});
-
-// Detiene el metrónomo al hacer clic en el botón de detener
-stopButton.addEventListener('click', stopMetronome);
-
-
-// Crea los Cuadros de Números de 1-9 (para silenciar)
-for (let i = 1; i <= 9; i++) {
-  const square = document.createElement('div');
-  square.classList.add('square');
-  square.classList.add('beat'+i);
-  square.textContent = traduccionN2T[i];
-  square.addEventListener('click', toggleSelect); // Agrega el listener para cambiar el estado de silenciado
-  grid.appendChild(square);
-  if (selectedNumbers.includes(i)) {
-    square.classList.add('selected'); // Marca como silenciado si está en el array
-  }
-}
-
 // Función para silenciar/desilenciar un número
 function toggleSelect(event) {
   const square = event.target;
   const number = traduccionT2N[square.textContent];
-
   // Actualiza el estado del número y el array de números silenciados
   if (square.classList.contains('selected')) {
     square.classList.remove('selected');
@@ -325,7 +263,7 @@ function toggleSelect(event) {
 function toggleSelectAll() {
   const squares = document.querySelectorAll('.square'); 
   const firstSquare = squares[0]; // Obtiene el primer cuadrado
-
+  
   // Comprueba si el primer cuadrado está seleccionado
   if (firstSquare.classList.contains('selected')) {
     // Deselecciona todos
@@ -357,14 +295,14 @@ function updateHistoryPattern(pattern) {
   } else {
     historyPattern = []; 
   }
-
+  
   // Elimina duplicados y agrega el nuevo patrón al inicio
   const existingIndex = historyPattern.indexOf(pattern);
   if (existingIndex !== -1) {
     historyPattern.splice(existingIndex, 1); 
   }
   historyPattern.unshift(pattern); 
-
+  
   // Guarda el historial actualizado
   localStorage.setItem('historyPattern', JSON.stringify(historyPattern));
 }
@@ -375,7 +313,7 @@ function getHistoryNext(rev=0) {
   if (historyPattern) {
     historyPattern = JSON.parse(historyPattern);
     let currentIndex = parseInt(localStorage.getItem('historyIndex')) || 0; 
-
+    
     if (rev!=0) {
       // Retrocede el índice, volviendo al final del historial al llegar a 0
       currentIndex = (currentIndex - 1 + historyPattern.length) % historyPattern.length; 
@@ -392,55 +330,55 @@ function getHistoryNext(rev=0) {
 
 //  Función para actualizar el select "historial" con los patrones
 /* function updateHistorySelect() {
-  const historialSelect = document.getElementById('historial');
-  historialSelect.innerHTML = ''; //  Limpia las opciones existentes
+const historialSelect = document.getElementById('historial');
+historialSelect.innerHTML = ''; //  Limpia las opciones existentes
 
-  let historyPattern = localStorage.getItem('historyPattern');
-  if (historyPattern) {
-    historyPattern = JSON.parse(historyPattern);
+let historyPattern = localStorage.getItem('historyPattern');
+if (historyPattern) {
+historyPattern = JSON.parse(historyPattern);
 
-    //  Trunca el historial a 100 elementos si es más largo
-    if (historyPattern.length > 100) {
-      historyPattern = historyPattern.slice(0, 100);
-    }
+//  Trunca el historial a 100 elementos si es más largo
+if (historyPattern.length > 100) {
+historyPattern = historyPattern.slice(0, 100);
+}
 
-    //  Crea las opciones del select
-    historyPattern.forEach(pattern => {
-      const option = document.createElement('option');
-      option.value = pattern;
-      option.textContent = (pattern.length<10 ? " "+pattern.length:pattern.length) + ': ' + pattern;
-      historialSelect.appendChild(option);
-    });
-  }
+//  Crea las opciones del select
+historyPattern.forEach(pattern => {
+  const option = document.createElement('option');
+option.value = pattern;
+option.textContent = (pattern.length<10 ? " "+pattern.length:pattern.length) + ': ' + pattern;
+historialSelect.appendChild(option);
+});
+}
 } */
 function updateHistoryDiv() {
   const historialDiv = document.getElementById('historial');
   historialDiv.innerHTML = ''; // Limpia los enlaces existentes
-
+  
   let historyPattern = localStorage.getItem('historyPattern');
   if (historyPattern) {
     historyPattern = JSON.parse(historyPattern);
-
+    
     // Trunca el historial a 100 elementos si es más largo
     if (historyPattern.length > 100) {
       historyPattern = historyPattern.slice(0, 100);
     }
-
+    
     // Crea los enlaces dentro del div
     historyPattern.forEach(pattern => {
       const link = document.createElement('div');
       link.textContent = (pattern.length<10 ? " "+pattern.length:pattern.length) + ': ' + pattern;
-
+      
       // Agrega la clase 'history-link' para estilizar 
       link.classList.add('patron'); 
-
+      
       // Agrega un evento click a cada enlace
       link.addEventListener('click', () => {
         // Lógica que se ejecutaba al seleccionar una opción del select
         // Aquí debes reemplazar con tu código específico 
         setPatron(pattern,true);
       });
-
+      
       historialDiv.appendChild(link);
     });
   }
@@ -459,7 +397,7 @@ function setPatron(pattern,setInput=true) {
   startIfIntervalId(); // Reinicia el metrónomo
 }
 
-
+// Revuelve una cadena al azar
 function shuffleString(str) {
   const arr = str.split(''); // Split into an array of characters
   for (let i = arr.length - 1; i > 0; i--) {
@@ -468,13 +406,12 @@ function shuffleString(str) {
   }
   return arr.join(''); // Join back into a string
 }
+// Genera un patrón azaroso entre min y max con una proporción de ceros
 function generateRandomPattern(minLength, maxLength, zeroProportion) {
   const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
   const numZeros = Math.floor(length * zeroProportion);
-
   let pattern = '';
   let zerosAdded = 0;
-
   for (let i = 0; i < length; i++) {
     if (zerosAdded < numZeros && Math.random() < 0.9) {
       pattern += '0';
@@ -487,177 +424,12 @@ function generateRandomPattern(minLength, maxLength, zeroProportion) {
 }
 
 
-//  Listener para el select "memoria"
-/* const memoriaSelect = document.getElementById('memoria');
-memoriaSelect.addEventListener('change', () => {
-  const selectedPattern = memoriaSelect.value; 
-  if (selectedPattern) {
-    modal.style.display = "none";
-    setPatron(selectedPattern);
-  }
-}); */
-
-//  Listener para el select "historial"
-/* const historialSelect = document.getElementById('historial');
-historialSelect.addEventListener('change', () => {
-  const selectedPattern = historialSelect.value; 
-  if (selectedPattern) {
-    modal.style.display = "none";
-    setPatron(selectedPattern);
-  }
-}); */
-
-beatPatternInput.addEventListener('input', (event) => {
-  setPatron(beatPatternInput.value.toUpperCase().replace(/[^A-I0]/g, ''),false);
-});
-beatPatternInput.addEventListener('change', (event) => {
-  beatPatternInput.value = beatPatternInput.value.toUpperCase().replace(/[^A-I0 ]/g, '');
-});
-// Actualiza el patrón de beats cuando se cambia el input de texto
-beatPatternInput.addEventListener('keyup', (event) => { 
-  const allowedChars = /^[a-z0-9A-Z]$/i;
-  // Navega por el historial de patrones con las flechas arriba/abajo
-  if (event.key === 'ArrowUp') {
-    event.preventDefault(); 
-    const previousString = getHistoryNext(1); // Obtiene el patrón anterior
-    if (previousString !== null) {
-      setPatron(previousString);
-    }
-  } else if (event.key === 'ArrowDown') {
-    event.preventDefault(); 
-    const nextString = getHistoryNext(); // Obtiene el siguiente patrón
-    if (nextString !== null) {
-      setPatron(nextString);
-    }
-  } else if (allowedChars.test(event.key)) {
-    // Filtra los caracteres válidos
-    let inputValue = beatPatternInput.value.toUpperCase();
-    let filteredValue = "";
-    let ss = beatPatternInput.selectionStart;
-    let se = beatPatternInput.selectionEnd;
-  
-    for (let i = 0; i < inputValue.length; i++) {
-      let char = inputValue[i];
-      if (/[A-I0 ]/.test(char)) {
-        filteredValue += char; // Mantiene el carácter válido
-      } else {
-        ss = ss-1;
-        se = ss-0;
-      }
-      // Si no es válido, no se agrega al filteredValue (se reemplaza con '')
-    }
-    beatPatternInput.value = filteredValue; // Actualiza el valor del input
-    beatPatternInput.setSelectionRange(ss, se);
-  }
-});
-
 function updatePatternLen() {
   beatPattern = beatPatternInput.value.toUpperCase().replace(/[^A-I0]/g, '');
   listPattern = transT2N(beatPattern);
   beatsPerMeasure = beatPattern.length;
   patternLenDiv.innerHTML = beatsPerMeasure; //  Actualiza el div con la longitud
 }
-
-// SETTINGS
-
-//  Modal de configuración:  obtener los elementos
-const settingsIcon = document.querySelector('.settings-icon');
-const modal = document.getElementById("settingsModal");
-const spanClose = document.getElementsByClassName("close")[0];
-
-//  Abrir el modal al hacer clic en el icono
-settingsIcon.onclick = function() {
-  modal.style.display = "block";
-}
-
-//  Cerrar el modal al hacer clic en el botón de cierre
-spanClose.onclick = function() {
-  modal.style.display = "none";
-}
-
-//  Cerrar el modal al hacer clic fuera del contenido
-modal.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
-
-// mute-icon
-muteIcon.addEventListener('click', () => {
-  toggleSelectAll();
-});
-
-// Vaciar historial listener
-vaciarHistorial.addEventListener('click', () => {
-  if (confirm("¿Confirma que desea vaciar su historial de patrones?")) {
-    localStorage.clear();
-    window.location.reload(); // Refresh for update
-  }
-});
-
-//  DARK/LIGHT MODE SWITCH
-//  Toggle dark mode on switch change
-darkModeSwitch.addEventListener('change', () => {
-  darkMode = darkModeSwitch.checked ? 1:0;
-  saveSettings();
-  //  DARK/LIGHT MODE SWITCH
-  if (darkMode>0) {
-    body.classList.add('dark-mode');
-  } else {
-    body.classList.remove('dark-mode');
-  }
-});
-
-// Listener para el selector de presets
-presetsSelect.addEventListener('change', () => {
-  setPatron(presetsSelect.value);
-});
-
-// Listener del randomizador
-randomForm.addEventListener('click', (event) => {
-  event.preventDefault(); // Prevent default form submission
-  const minLength = parseInt(document.getElementById('minLength').value, 10);
-  const maxLength = parseInt(document.getElementById('maxLength').value, 10);
-  const zeroProportion = parseFloat(document.getElementById('zeroProportion').value);
-  setPatron(generateRandomPattern(minLength, maxLength, zeroProportion));
-});
-
-
-// TECLADO
-// const teclas = document.querySelectorAll('.teclado .boton');
-teclas.forEach(boton => {
-  boton.addEventListener('click', () => {
-    const botonValue = boton.innerText;
-    const cursorPosition = beatPatternInput.selectionStart;
-    let siset = true;
-    switch (boton.id) {
-      case 'left':
-      beatPatternInput.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
-      siset = false;
-      break;
-      case 'right':
-      beatPatternInput.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
-      siset = false;
-      break;
-      case 'backspace':
-      beatPatternInput.value = beatPatternInput.value.substring(0, cursorPosition - 1) + beatPatternInput.value.substring(cursorPosition, beatPatternInput.value.length);
-      beatPatternInput.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
-      break;
-      case 'supr':
-      beatPatternInput.value = beatPatternInput.value.substring(0, cursorPosition) + beatPatternInput.value.substring(cursorPosition + 1, beatPatternInput.value.length);
-      beatPatternInput.setSelectionRange(cursorPosition, cursorPosition);
-      break;
-      case 'vaciar':
-      beatPatternInput.value = '';
-      break;
-      default:
-      beatPatternInput.value = beatPatternInput.value.substring(0, cursorPosition) + botonValue + beatPatternInput.value.substring(cursorPosition, beatPatternInput.value.length);
-      beatPatternInput.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
-    }
-    if(siset)setPatron(beatPatternInput.value.toUpperCase().replace(/[^A-I0]/g, ''),false);
-    beatPatternInput.focus();
-  });
-});
 
 // API
 function fechaMexico(timestamp) {
@@ -669,7 +441,6 @@ function fechaMexico(timestamp) {
   let opciones = { day: 'numeric', month: 'numeric', year: 'numeric' };
   return fechaMexico.toLocaleDateString('es-MX', opciones);
 }
-
 function enviarPatron(patronRitmico) {
   // Preguntar al usuario por el nombre de la clave
   var nombreClave = prompt("Introduce un nombre para este patrón:");
@@ -743,22 +514,10 @@ function cargarPatrones(pag=1) {
       link.classList.add('patron');
       // Agrega un evento click a cada enlace
       link.addEventListener('click', () => {
-        // Lógica que se ejecutaba al seleccionar una opción del select
-        // Aquí debes reemplazar con tu código específico 
         setPatron(patron[2],true);
         modal.style.display = "none";
       });
       contenedor.appendChild(link);
-      // contenedor.add(historialDiv);
-
-      // Crear un nuevo elemento option en select
-      /* var opcion = document.createElement("option");
-      opcion.value = patron[2]; // El valor es el patrón rítmico
-      opcion.text = patron[1]+' ['+patron[2].length+': '+patron[2]+'] ('+fechaMexico(patron[0])+')'; // El texto es el nombre del patrón
-      
-      // Agregar la opción al contenedor select
-      contenedor.add(opcion); */
-
     });
   })
   .catch(error => {
@@ -778,6 +537,224 @@ function recorrerPatron(dir = 0) {
   }
   setPatron(beatPattern,true);
 }
+
+// -----------------------------------------------------------
+// AQUÍ VIENEN LOS LISTENERS ---------------------------------
+
+// Listeners DE LOS BOTONES PRINCIPALES
+
+// Actualiza el BPM cuando se cambia el input de texto
+bpmInput.addEventListener('input', () => {
+  const testBPM = parseInt(bpmInput.value);
+  if (bpmInput.value=='' || testBPM<=0) {
+    bpm = 1;
+  } else {
+    bpm = testBPM;
+  }
+  bpmSlider.value = bpm;
+  startIfIntervalId(); // Reinicia el metrónomo
+});
+
+// Actualiza el BPM cuando se cambia el slider
+bpmSlider.addEventListener('input', () => {
+  bpm = parseInt(bpmSlider.value);
+  bpmInput.value = bpm;
+  startIfIntervalId(); // Reinicia el metrónomo
+});
+function setSliderBPMMax() {
+  bpmSlider.setAttribute('max',(isCPM ? '120':'1440')); // Modifica el máximo del slider para BPM/CPM
+  bpmSlider.value = bpm; // Modifica el máximo del slider para BPM/CPM
+} 
+
+// Actualiza el modo BPM/CPM cuando se cambia el select
+bpmcpm.addEventListener('input', () => {
+  const tmpBC = parseInt(bpmcpm.value);
+  if (tmpBC!=isCPM) {
+    isCPM = tmpBC;
+    bpmcpm.value = isCPM;
+    bpm = parseInt(isCPM ? bpm/beatsPerMeasure:bpm*beatsPerMeasure);
+    bpmInput.value = bpm;
+    setSliderBPMMax();
+    startIfIntervalId(); // Reinicia el metrónomo
+  }
+});
+
+// Actualiza el volumen general cuando se cambia el slider
+volumeSlider.addEventListener('input', () => {
+  volumen = parseFloat(volumeSlider.value);
+  sound.forEach(s => s.volume(volumen)); // Actualiza el volumen de todos los sonidos
+  saveSettings(); // Guarda la configuración
+});
+
+// Inicia el metrónomo al hacer clic en el botón de inicio
+startButton.addEventListener('click', () => {
+  if (!soundAllowed) {
+    // First time click, request permission and start metronome
+    sound[0].play(); // This will trigger the browser's autoplay permission prompt
+    soundAllowed = true; // Mark sound as allowed
+  }
+  startMetronome();
+});
+
+// Detiene el metrónomo al hacer clic en el botón de detener
+stopButton.addEventListener('click', stopMetronome);
+
+// Crea los Cuadros de Números de 1-9 (para silenciar)
+for (let i = 1; i <= 9; i++) {
+  const square = document.createElement('div');
+  square.classList.add('square');
+  square.classList.add('beat'+i);
+  square.textContent = traduccionN2T[i];
+  square.addEventListener('click', toggleSelect); // Agrega el listener para cambiar el estado de silenciado
+  grid.appendChild(square);
+  if (selectedNumbers.includes(i)) {
+    square.classList.add('selected'); // Marca como silenciado si está en el array
+  }
+}
+
+// Cuando hay cambios en el input de patrón
+beatPatternInput.addEventListener('input', (event) => {
+  setPatron(beatPatternInput.value.toUpperCase().replace(/[^A-I0]/g, ''),false);
+});
+beatPatternInput.addEventListener('change', (event) => {
+  beatPatternInput.value = beatPatternInput.value.toUpperCase().replace(/[^A-I0 ]/g, '');
+});
+// Actualiza el patrón de beats cuando se cambia el input de texto
+beatPatternInput.addEventListener('keyup', (event) => { 
+  const allowedChars = /^[a-z0-9A-Z]$/i;
+  // Navega por el historial de patrones con las flechas arriba/abajo
+  if (event.key === 'ArrowUp') {
+    event.preventDefault(); 
+    const previousString = getHistoryNext(1); // Obtiene el patrón anterior
+    if (previousString !== null) {
+      setPatron(previousString);
+    }
+  } else if (event.key === 'ArrowDown') {
+    event.preventDefault(); 
+    const nextString = getHistoryNext(); // Obtiene el siguiente patrón
+    if (nextString !== null) {
+      setPatron(nextString);
+    }
+  } else if (allowedChars.test(event.key)) {
+    // Filtra los caracteres válidos
+    let inputValue = beatPatternInput.value.toUpperCase();
+    let filteredValue = "";
+    let ss = beatPatternInput.selectionStart;
+    let se = beatPatternInput.selectionEnd;
+    
+    for (let i = 0; i < inputValue.length; i++) {
+      let char = inputValue[i];
+      if (/[A-I0 ]/.test(char)) {
+        filteredValue += char; // Mantiene el carácter válido
+      } else {
+        ss = ss-1;
+        se = ss-0;
+      }
+      // Si no es válido, no se agrega al filteredValue (se reemplaza con '')
+    }
+    beatPatternInput.value = filteredValue; // Actualiza el valor del input
+    beatPatternInput.setSelectionRange(ss, se);
+  }
+});
+
+
+//  Abrir el modal al hacer clic en el icono
+settingsIcon.onclick = function() {
+  // Abrir patrones
+  cargarPatrones(beatPattern);
+  modal.style.display = "block";
+}
+
+//  Cerrar el modal al hacer clic en el botón de cierre
+spanClose.onclick = function() {
+  modal.style.display = "none";
+}
+
+//  Cerrar el modal al hacer clic fuera del contenido
+modal.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+// mute-icon
+muteIcon.addEventListener('click', () => {
+  toggleSelectAll();
+});
+
+// Vaciar historial listener
+vaciarHistorial.addEventListener('click', () => {
+  if (confirm("¿Confirma que desea vaciar su historial de patrones?")) {
+    localStorage.clear();
+    window.location.reload(); // Refresh for update
+  }
+});
+
+//  DARK/LIGHT MODE SWITCH
+//  Toggle dark mode on switch change
+darkModeSwitch.addEventListener('change', () => {
+  darkMode = darkModeSwitch.checked ? 1:0;
+  saveSettings();
+  //  DARK/LIGHT MODE SWITCH
+  if (darkMode>0) {
+    body.classList.add('dark-mode');
+  } else {
+    body.classList.remove('dark-mode');
+  }
+});
+
+// Listener para el selector de presets
+presetsSelect.addEventListener('change', () => {
+  setPatron(presetsSelect.value);
+});
+
+// Listener del randomizador
+randomForm.addEventListener('click', (event) => {
+  event.preventDefault(); // Prevent default form submission
+  const minLength = parseInt(document.getElementById('minLength').value, 10);
+  const maxLength = parseInt(document.getElementById('maxLength').value, 10);
+  const zeroProportion = parseFloat(document.getElementById('zeroProportion').value);
+  setPatron(generateRandomPattern(minLength, maxLength, zeroProportion));
+});
+
+
+// TECLADO
+// const teclas = document.querySelectorAll('.teclado .boton');
+teclas.forEach(boton => {
+  boton.addEventListener('click', () => {
+    const botonValue = boton.innerText;
+    const cursorPosition = beatPatternInput.selectionStart;
+    let siset = true;
+    switch (boton.id) {
+      case 'left':
+        beatPatternInput.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+        siset = false;
+        break;
+      case 'right':
+        beatPatternInput.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
+        siset = false;
+        break;
+      case 'backspace':
+        beatPatternInput.value = beatPatternInput.value.substring(0, cursorPosition - 1) + beatPatternInput.value.substring(cursorPosition, beatPatternInput.value.length);
+        beatPatternInput.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+        break;
+      case 'supr':
+        beatPatternInput.value = beatPatternInput.value.substring(0, cursorPosition) + beatPatternInput.value.substring(cursorPosition + 1, beatPatternInput.value.length);
+        beatPatternInput.setSelectionRange(cursorPosition, cursorPosition);
+        break;
+      case 'vaciar':
+        beatPatternInput.value = '';
+        break;
+      default:
+        beatPatternInput.value = beatPatternInput.value.substring(0, cursorPosition) + botonValue + beatPatternInput.value.substring(cursorPosition, beatPatternInput.value.length);
+        beatPatternInput.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
+    }
+    if(siset)setPatron(beatPatternInput.value.toUpperCase().replace(/[^A-I0]/g, ''),false);
+    beatPatternInput.focus();
+  });
+});
+
+// BOTONERA
 botonera.forEach(boton => {
   boton.addEventListener('click', () => {
     switch (boton.id) {
@@ -785,13 +762,14 @@ botonera.forEach(boton => {
         const teclado = document.querySelectorAll('.teclado')[0];
         if(teclado.style.display === 'none') {
           teclado.style.display =  'grid';
+          boton.classList.add('pressed');
           beatPatternInput.setAttribute('inputmode', 'none');
           beatPatternInput.focus();
         } else {
           teclado.style.display =  'none';
+          boton.classList.remove('pressed');
           beatPatternInput.removeAttribute('inputmode');
         }
-        
         break;
       case 'recorrer-left':
         recorrerPatron(0);
@@ -803,7 +781,7 @@ botonera.forEach(boton => {
         break;
       case 'abrir-patrones':
         // Abrir patrones
-        cargarPatrones(beatPattern);
+        cargarPatrones(1);
         modal.style.display = "block";
         break;
       case 'guardar-patron':
@@ -811,46 +789,13 @@ botonera.forEach(boton => {
         enviarPatron(beatPattern);
         break;
       default:
-        break;
+        //No hace nada
     }
   });
 });
-/* function detectMobileDevice() {
-  const userAgentData = navigator.userAgentData;
-  let isMobile = false;
-  // 1. Check for mobile keywords in userAgentData.brands
-  if (userAgentData && userAgentData.brands) {
-    isMobile = userAgentData.brands.some(
-      (brand) =>
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          brand.brand
-        )
-    );
-  }
-  // 2. Fallback: Check navigator.userAgent if userAgentData is unavailable
-  if (!isMobile && navigator.userAgent) {
-    isMobile =
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      );
-  }
-  // 3. Consider touch events as a strong indicator
-  if (!isMobile && 'ontouchstart' in window) {
-    isMobile = true;
-  }
 
-  return isMobile;
-}
-// Example usage
-const isMobileDevice = detectMobileDevice();
-
-if (!isMobileDevice) {
-  const teclado = document.querySelectorAll('.teclado')[0];
-  teclado.style.display='None';
-  // Implement mobile-specific logic
-} */
-
-// EJECUCIÓN INICIAL
+// -----------------------------------------------------------
+// EJECUCIÓN INICIAL -----------------------------------------
 cargarPatrones(1); // Carga la lista de Patrones desde la API
 // updateHistorySelect(); // Llena el select del historial
 updateHistoryDiv(); // Actualiza la lista del historial
